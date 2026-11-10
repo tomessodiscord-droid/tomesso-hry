@@ -1,0 +1,384 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VAR Operátor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=VT323&display=swap">
+<style>
+/* Layout: one portrait desk. CRT monitor on top, scrub deck below, a paper "ACTION" sheet slides up for the ruling. */
+:root{
+  --desk:#2e86a6; --desk-dk:#1c586f; --plastic:#e8e4cd; --plastic-dk:#b3ae90;
+  --ink:#13242c; --phos:#86ffb4; --red:#dd3f35; --yel:#f1b52c; --paper:#f2f1ea;
+  --f-ui:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --f-crt:"VT323","Courier New",monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--desk);background-image:radial-gradient(120% 80% at 50% 0%,#3b97b8 0%,var(--desk) 45%,var(--desk-dk) 100%);color:var(--ink);font-family:var(--f-ui);font-weight:600;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 24px;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.desk{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 2px 0 var(--ink)}
+.hud b{font-weight:800;font-size:20px}
+.hud .brand{background:var(--ink);color:var(--phos);padding:2px 9px;border-radius:6px;font-family:var(--f-crt);font-size:24px;text-shadow:none;letter-spacing:.1em}
+.pips{display:inline-flex;gap:4px;vertical-align:middle}
+.pips i{width:12px;height:12px;border-radius:50%;border:2.5px solid var(--ink);background:#fff}
+.pips i.on{background:var(--red)}
+.hud div{min-width:0}
+.bezel{background:var(--plastic);border:4px solid var(--ink);border-radius:22px;padding:14px 14px 30px;position:relative;box-shadow:0 6px 0 var(--ink)}
+.bezel .tag{position:absolute;right:14px;bottom:5px;background:var(--yel);border:2.5px solid var(--ink);padding:0 8px;font-size:14px;letter-spacing:.1em;text-transform:uppercase;transform:rotate(-2deg)}
+.bezel .led{position:absolute;left:16px;bottom:11px;width:10px;height:10px;border-radius:50%;background:var(--phos);border:2px solid var(--ink)}
+.screen{position:relative;border:4px solid var(--ink);border-radius:16px;overflow:hidden;background:#081208;aspect-ratio:400/280}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+.crt{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px),radial-gradient(120% 100% at 50% 50%,transparent 55%,rgba(0,0,0,.5) 100%)}
+.crt::after{content:"";position:absolute;left:0;right:0;height:18%;top:-20%;background:linear-gradient(transparent,rgba(134,255,180,.09),transparent);animation:roll 6s linear infinite}
+@keyframes roll{to{top:110%}}
+.osd{position:absolute;left:10px;right:10px;top:6px;display:flex;justify-content:space-between;font-family:var(--f-crt);font-size:22px;color:var(--phos);text-shadow:0 0 6px rgba(134,255,180,.7);pointer-events:none}
+.rec::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff5a4d;margin-right:6px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.call{background:var(--ink);color:#fff;border-radius:12px;padding:8px 14px;font-size:19px;line-height:1.2;min-height:44px;display:flex;align-items:center}
+.call span{color:var(--yel);margin-right:8px;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.deck{background:var(--plastic);border:4px solid var(--ink);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 6px 0 var(--ink)}
+.scrub{display:flex;align-items:center;gap:10px}
+.time{font-family:var(--f-crt);font-size:26px;min-width:84px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:34px;background:transparent;touch-action:none}
+input[type=range]::-webkit-slider-runnable-track{height:10px;background:var(--ink);border-radius:6px;box-shadow:0 2px 0 var(--plastic-dk)}
+input[type=range]::-moz-range-track{height:10px;background:var(--ink);border-radius:6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:34px;margin-top:-12px;background:#7aa9bf;border:3px solid var(--ink);border-radius:6px;box-shadow:0 3px 0 var(--ink)}
+input[type=range]::-moz-range-thumb{width:24px;height:30px;background:#7aa9bf;border:3px solid var(--ink);border-radius:6px}
+.row{display:flex;gap:8px;align-items:stretch}
+.btn{flex:1;min-height:46px;background:#fff;border:3px solid var(--ink);border-radius:10px;box-shadow:0 4px 0 var(--ink);font-size:18px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:0 6px}
+.btn:active,.btn.on{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.on{background:var(--phos)}
+.pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px);gap:5px}
+.pad .btn{min-height:0;padding:0;font-size:20px;border-radius:8px;box-shadow:0 3px 0 var(--ink);background:#6fa4bb}
+.pad .w{grid-column:2}.pad .a{grid-column:1;grid-row:2}.pad .s{grid-column:2;grid-row:2}.pad .d{grid-column:3;grid-row:2}
+.zoom{display:grid;grid-template-rows:1fr 1fr;gap:5px}
+.zoom .btn{min-height:0;width:44px;padding:0;font-size:22px;box-shadow:0 3px 0 var(--ink);background:#6fa4bb}
+.decide{flex:1;min-width:0;background:var(--yel);border:4px solid var(--ink);border-radius:14px;box-shadow:0 5px 0 var(--ink);font-size:26px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1}
+.decide:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.decide small{display:block;font-size:14px;letter-spacing:.08em;margin-top:4px;opacity:.75}
+/* sheets */
+.back{position:fixed;inset:0;background:rgba(10,24,30,.72);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:20}
+.back.dock{background:transparent;align-items:flex-end;pointer-events:none}
+.back.dock .dlg{pointer-events:auto}
+.dlg{background:var(--paper);border:4px solid var(--ink);border-radius:18px;box-shadow:0 6px 0 var(--ink);padding:18px;width:100%;max-width:440px;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.dlg h2{margin:0;font-size:34px;line-height:1;letter-spacing:.02em;text-transform:uppercase;font-weight:800;text-wrap:balance}
+.dlg p{margin:0;font-size:20px;line-height:1.25;font-weight:600;max-width:34em}
+.dlg .who{font-family:var(--f-crt);font-size:22px;color:#1f7a49;letter-spacing:.04em}
+.dlg .acts{display:flex;gap:10px;flex-wrap:wrap}
+.dlg .acts .btn{flex:1 1 140px;min-height:52px;font-size:20px}
+.dlg .go{background:var(--yel)}
+.chip{display:inline-block;padding:2px 10px;border:3px solid var(--ink);border-radius:8px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:20px}
+.chip.ok{background:var(--phos)}.chip.bad{background:var(--red);color:#fff}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:20px}
+.stats b{font-family:var(--f-crt);font-size:30px;font-weight:400;display:block;line-height:1}
+.stats span{text-transform:uppercase;letter-spacing:.06em;font-size:15px;opacity:.7}
+.sheetHead{display:flex;justify-content:space-between;align-items:center}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#fff;border:3px solid var(--ink);border-radius:10px;padding:8px 8px 6px;display:flex;flex-direction:column;gap:4px;align-items:stretch;box-shadow:0 4px 0 var(--ink);text-align:left}
+.card:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.card svg{width:100%;height:64px;display:block}
+.card .cl{font-size:20px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1}
+.card .bar{height:9px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px)}
+.card:last-child{grid-column:1/-1}
+.card:last-child svg{height:48px}
+@media (prefers-reduced-motion:reduce){.crt::after,.rec::before{animation:none}}
+</style>
+
+<main class="desk">
+  <div class="hud">
+    <div class="brand">VAR</div>
+    <div>Případ <b id="hCase">1/8</b></div>
+    <div>Přesnost <b id="hAcc">0/0</b></div>
+    <div><b id="hCash">0</b> Kč</div>
+    <div class="pips" id="hMist" aria-label="Chyby"><i></i><i></i><i></i></div>
+  </div>
+
+  <section class="bezel" aria-label="Záznam z utkání">
+    <div class="screen">
+      <canvas id="cv" width="400" height="280"></canvas>
+      <div class="osd"><span class="rec">ZÁZNAM CAM-2</span><span id="osdT">0:00.00</span></div>
+      <div class="crt"></div>
+    </div>
+    <i class="led"></i><span class="tag">Kamera W A S D</span>
+  </section>
+
+  <div class="call" id="call"><span>Hlas v uchu</span>Čekám na směnu…</div>
+
+  <section class="deck">
+    <div class="scrub">
+      <input type="range" id="sl" min="0" max="600" value="0" aria-label="Přetáčení záznamu">
+      <div class="time" id="tt">0:00.00</div>
+    </div>
+    <div class="row">
+      <button class="btn" id="bBack" aria-label="Snímek zpět">◀|</button>
+      <button class="btn" id="bPlay" aria-label="Přehrát">▶</button>
+      <button class="btn" id="bFwd" aria-label="Snímek vpřed">|▶</button>
+      <button class="btn" id="bSlow">¼×</button>
+      <button class="btn" id="bLine">Čára</button>
+    </div>
+    <div class="row">
+      <div class="pad">
+        <button class="btn w" data-pan="0,-1">W</button>
+        <button class="btn a" data-pan="-1,0">A</button>
+        <button class="btn s" data-pan="0,1">S</button>
+        <button class="btn d" data-pan="1,0">D</button>
+      </div>
+      <div class="zoom">
+        <button class="btn" data-zoom="1" aria-label="Přiblížit">+</button>
+        <button class="btn" data-zoom="-1" aria-label="Oddálit">−</button>
+      </div>
+      <button class="decide" id="bDecide">Rozhodnout<small>otevřít kartu akce</small></button>
+    </div>
+  </section>
+</main>
+
+<div class="back" id="back" hidden><div class="dlg" id="dlg"></div></div>
+
+<script>
+(()=>{
+const T=6,W=400,H=280,S=4,NC=8,BRIBE=25000;
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const LBL={goal:'Gól',nogoal:'Žádný gól',yellow:'Žlutá karta',red:'Červená karta',playon:'Hra pokračuje'};
+const WISH={goal:'nogoal',nogoal:'goal',playon:'yellow',yellow:'playon',red:'playon'};
+const COL={r:'#d9372f',b:'#2f5fd0',k:'#e6c93a'};
+const cv=$('cv'),ctx=cv.getContext('2d');
+
+/* ---------- scenes: everything is a function of time, so scrubbing is free ---------- */
+function kf(p){return t=>{if(t<=p[0][0])return{x:p[0][1],y:p[0][2]};for(let i=1;i<p.length;i++){if(t<=p[i][0]){const a=p[i-1],b=p[i],u=(t-a[0])/((b[0]-a[0])||1);return{x:a[1]+(b[1]-a[1])*u,y:a[2]+(b[2]-a[2])*u}}}const l=p[p.length-1];return{x:l[1],y:l[2]}}}
+const P=(team,path,o={})=>Object.assign({team,p:kf(path),down:null,arm:null,def:false,att:false},o);
+
+function sOffside(){
+  const tp=rnd(1.8,2.6),d=pick([-1,1])*rnd(0.9,2.4),L0=rnd(24,27),sl=rnd(-.6,.9);
+  const line=t=>L0+sl*t,ax=rnd(40,60),yA=line(tp)+d,ts=tp+1.2,yS=yA-9.6,px=ax+rnd(12,18),py=46;
+  const setter=Math.floor(rnd(0,4)),xs=shuffle([26,41,59,74]);
+  const ents=[];
+  xs.forEach((x,i)=>{const off=i===setter?0:rnd(1.3,3);ents.push(P('b',[[0,x,line(0)+off],[3.4,x,line(3.4)+off],[T,x+(ax-x)*.3,line(3.4)+off+3]],{def:true}))});
+  const att=P('r',[[0,ax,yA+8*tp],[tp,ax,yA],[ts,ax,yS],[T,ax+2,yS-3]],{att:true});
+  ents.push(att,P('r',[[0,px+1,py+2],[tp,px,py],[T,px,py]]),P('r',[[0,18,40],[T,24,34]]),P('k',[[0,50,4.5],[ts,50,4.5],[ts+.7,50+rnd(-6,6),4]]));
+  const gx=50+rnd(-3,3);
+  const ball=kf([[0,px-1.2,py-1.4],[tp,px-1.2,py-1.4],[ts,ax,yS-.5],[ts+.8,gx,.8],[T,gx,.8]]);
+  const off=d<0,cm=Math.round(Math.abs(d)*105);
+  return{kind:'off',call:'Hlavní rozhodčí odpískal gól. Zkontroluj ofsajd v okamžiku přihrávky.',ents,ball,truth:off?'nogoal':'goal',keyT:tp,lines:true,att,
+    why:off?`Útočník byl v okamžiku přihrávky asi ${cm} cm před předposledním obráncem. Ofsajd, gól neplatí.`:`Útočník byl v okamžiku přihrávky asi ${cm} cm za čarou obrany. Je ve hře, gól platí.`};
+}
+function sFoul(){
+  const kind=pick(['clean','normal','last','normal','clean']);
+  const tc=rnd(2.6,3.2),ax=rnd(42,58),yc=rnd(24,28),ents=[];
+  const dive=kind!=='clean'||Math.random()<.6;
+  const att=P('r',[[0,ax-4,yc+20],[tc,ax,yc],[tc+.4,ax+.2,yc-1.2],[T,ax+.2,yc-1.2]],{down:dive?tc+.1:null});
+  const defPath=kind==='clean'?[[0,ax+10,yc+22],[tc,ax,yc-2.3],[tc+.7,ax+4,yc-3],[T,ax+8,yc]]:[[0,ax+10,yc+22],[tc,ax+.7,yc+1.4],[tc+.6,ax+.9,yc+1.2],[T,ax+.9,yc+1.2]];
+  ents.push(att,P('b',defPath,{def:true}),P('k',[[0,50,4.5],[T,50,4.5]]));
+  if(kind!=='last'){ents.push(P('b',[[0,ax-15,16],[T,ax-12,15]],{def:true}),P('b',[[0,ax+17,15],[T,ax+14,15]],{def:true}))}
+  ents.push(P('r',[[0,ax-26,36],[T,ax-22,26]]));
+  const ball=kind==='clean'?kf([[0,ax-4,yc+17.7],[tc,ax,yc-2.3],[tc+.8,ax+16,yc+2],[T,ax+20,yc+6]]):kf([[0,ax-4,yc+17.7],[tc,ax,yc-2.3],[T,ax-3,6]]);
+  const truth=kind==='clean'?'playon':kind==='normal'?'yellow':'red';
+  const why={clean:'Obránce zahrál míč dřív, než se dotkl soupeře. Žádný faul, útočník jen spadl.',
+    normal:'Obránce trefil hráče a ne míč. Faul. Za ním ale zůstali další obránci, stačí žlutá.',
+    last:'Obránce nezahrál míč a zastavil hráče, který šel sám na brankáře. Zmaření šance, červená.'}[kind];
+  return{kind:'foul',call:'Útočník padl v pokutovém území. Rozhodčí nepískl. Byl tam faul?',ents,ball,truth,keyT:tc,why};
+}
+function sHand(){
+  const tk=rnd(1.3,1.8),onT=Math.random()<.55,out=Math.random()<.6,sx=rnd(44,56),sy=30;
+  const tx=onT?rnd(46,54):pick([rnd(16,26),rnd(74,84)]),f=16/30,dx=sx+(tx-sx)*f,tc=tk+f*1.1,side=Math.random()<.5?1:-1;
+  const bx=dx+(dx<50?-1:1)*8;
+  const defX=out?dx-side*4.4:dx;
+  const def=P('b',[[0,defX-5,11],[tc-.4,defX,14],[T,defX,14.5]],{def:true,arm:{side,fn:t=>out?(t>=tc-.3?3:.5):.5}});
+  const ents=[def,P('k',[[0,50,4.5],[T,50,4.5]]),P('r',[[0,sx,sy+1],[T,sx,sy+1]]),P('r',[[0,sx-20,34],[T,sx-16,28]]),P('b',[[0,30,19],[T,32,19]],{def:true})];
+  const ball=kf([[0,sx,sy-.4],[tk,sx,sy-.4],[tc,dx,14],[tc+.8,bx,18],[T,bx+(dx<50?-4:4),23]]);
+  const truth=out?(onT?'red':'yellow'):'playon';
+  const why=out?(onT?'Obránce měl ruku od těla a zastavil střelu mířící do brány. Ruka, zmaření gólové šance, červená.':'Obránce měl ruku od těla a zvětšil si plochu. Ruka, ale střela šla mimo, stačí žlutá.'):'Míč zasáhl tělo obránce, paže byla u těla. Přirozené postavení, hra pokračuje.';
+  return{kind:'hand',call:'Míč zasáhl obránce v pokutovém území. Rozhodčí nepískl. Byla to ruka?',ents,ball,truth,keyT:tc,why};
+}
+const MAKE={off:sOffside,foul:sFoul,hand:sHand};
+
+/* ---------- state ---------- */
+const G={i:0,ok:0,done:0,mist:0,corrupt:0,cash:0,score:0,sc:null,t:0,playing:false,rate:1,line:false,t0:0,locked:true,bribeSeen:false,took:false,bribeAt:[]};
+const cam={x:50,y:35,z:1};
+let best=0;try{best=+localStorage.getItem('var-best')||0}catch(e){}
+
+/* ---------- drawing ---------- */
+function ell(x,y,rx,ry,rot,fill,stroke){ctx.beginPath();ctx.ellipse(x,y,rx,ry,rot||0,0,7);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.stroke()}}
+function drawPitch(){
+  ctx.fillStyle='#1f4f2c';ctx.fillRect(-30,-30,160,140);
+  for(let i=0;i<9;i++){ctx.fillStyle=i%2?'#3d9a4a':'#47ab56';ctx.fillRect(-10,i*10,120,10)}
+  ctx.fillStyle='#2b6d37';ctx.fillRect(-10,-6,120,6);
+  ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=.35;
+  ctx.beginPath();ctx.moveTo(-10,2);ctx.lineTo(110,2);ctx.stroke();
+  ctx.strokeRect(22,2,56,16);ctx.strokeRect(38,2,24,6);
+  ell(50,13,.4,.4,0,'#fff');
+  ctx.beginPath();ctx.arc(50,13,8.7,.61,2.53);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(45,-1.5,10,3.5);
+  ctx.lineWidth=.15;ctx.beginPath();for(let x=45;x<=55;x+=1){ctx.moveTo(x,-1.5);ctx.lineTo(x,2)}for(let y=-1.5;y<2;y+=1){ctx.moveTo(45,y);ctx.lineTo(55,y)}ctx.stroke();
+  ctx.lineWidth=.6;ctx.strokeRect(45,-1.5,10,3.5);
+}
+function drawP(e,t){
+  const p=e.p(t),q=e.p(t+.08),r=e.p(Math.max(0,t-.08));
+  let fx=q.x-r.x,fy=q.y-r.y;const m=Math.hypot(fx,fy);
+  if(m>.05)e.f=[fx/m,fy/m];const f=e.f||[0,-1];
+  ctx.fillStyle='rgba(0,0,0,.28)';ell(p.x+.6,p.y+.7,2,1.3,0,'rgba(0,0,0,.28)');
+  ctx.strokeStyle='#13242c';ctx.lineWidth=.35;
+  if(e.down!=null&&t>=e.down){
+    ell(p.x,p.y,2.9,1.5,.4,COL[e.team],true);ell(p.x-2.7,p.y-.8,.9,.9,0,'#3b2a20',true);return;
+  }
+  for(const s of[-1,1]){
+    const len=(e.arm&&e.arm.side===s)?e.arm.fn(t):.5,hx=p.x+s*(1.3+len);
+    ctx.beginPath();ctx.moveTo(p.x+s*1.2,p.y);ctx.lineTo(hx,p.y);ctx.lineWidth=.9;ctx.strokeStyle='#f0c8a0';ctx.stroke();
+    ell(hx,p.y,.55,.55,0,'#f0c8a0');
+  }
+  ctx.strokeStyle='#13242c';ctx.lineWidth=.35;
+  ell(p.x,p.y,1.7,1.5,0,COL[e.team],true);
+  ell(p.x+f[0]*.4,p.y+f[1]*.4,.85,.85,0,'#3b2a20',true);
+}
+function lineY(t,sc){let m=1e9;for(const e of sc.ents)if(e.def)m=Math.min(m,e.p(t).y);return m}
+function draw(){
+  const sc=G.sc,t=G.t,s=S*cam.z;
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#061006';ctx.fillRect(0,0,W,H);
+  ctx.setTransform(s,0,0,s,W/2-cam.x*s,H/2-cam.y*s);
+  drawPitch();
+  if(!sc)return;
+  if(G.line&&sc.lines){
+    ctx.setLineDash([1.2,.8]);ctx.lineWidth=.3;
+    ctx.strokeStyle='#4de8ff';let y=lineY(t,sc);ctx.beginPath();ctx.moveTo(-10,y);ctx.lineTo(110,y);ctx.stroke();
+    ctx.strokeStyle='#ff6a5c';y=sc.att.p(t).y;ctx.beginPath();ctx.moveTo(-10,y);ctx.lineTo(110,y);ctx.stroke();ctx.setLineDash([]);
+  }
+  const list=sc.ents.slice().sort((a,b)=>a.p(t).y-b.p(t).y);
+  list.forEach(e=>drawP(e,t));
+  const b=sc.ball(t);ctx.strokeStyle='#13242c';ctx.lineWidth=.3;
+  ell(b.x+.4,b.y+.5,.9,.6,0,'rgba(0,0,0,.3)');ell(b.x,b.y,.95,.95,0,'#fff',true);
+}
+
+/* ---------- ui helpers ---------- */
+const fmt=t=>{const s=Math.floor(t),c=Math.floor((t-s)*100);return`0:${String(s).padStart(2,'0')}.${String(c).padStart(2,'0')}`};
+function hud(){
+  $('hCase').textContent=`${Math.min(G.i+1,NC)}/${NC}`;$('hAcc').textContent=`${G.ok}/${G.done}`;
+  $('hCash').textContent=G.cash.toLocaleString('cs-CZ');
+  [...$('hMist').children].forEach((el,i)=>el.classList.toggle('on',i<G.mist));
+}
+function setT(t){G.t=Math.max(0,Math.min(T,t));$('sl').value=Math.round(G.t*100);$('tt').textContent=$('osdT').textContent=fmt(G.t)}
+function setPlay(on){G.playing=on;$('bPlay').textContent=on?'❚❚':'▶'}
+function show(html,dock){const b=$('back');$('dlg').innerHTML=html;b.className='back'+(dock?' dock':'');b.hidden=false;G.locked=true;setPlay(false)}
+function hide(){$('back').hidden=true;G.locked=false}
+const ICO={
+ goal:'<svg viewBox="0 0 100 64"><circle cx="50" cy="32" r="26" fill="#fff" stroke="#13242c" stroke-width="3"/><path d="M50 18l12 9-5 14H43l-5-14z" fill="#13242c"/></svg>',
+ nogoal:'<svg viewBox="0 0 100 64"><circle cx="50" cy="32" r="26" fill="#fff" stroke="#13242c" stroke-width="3"/><path d="M50 18l12 9-5 14H43l-5-14z" fill="#13242c"/><circle cx="50" cy="32" r="29" fill="none" stroke="#dd3f35" stroke-width="6"/><path d="M30 52L70 12" stroke="#dd3f35" stroke-width="6"/></svg>',
+ yellow:'<svg viewBox="0 0 100 64"><rect x="33" y="6" width="34" height="52" rx="4" transform="rotate(8 50 32)" fill="#f1b52c" stroke="#13242c" stroke-width="3"/></svg>',
+ red:'<svg viewBox="0 0 100 64"><rect x="33" y="6" width="34" height="52" rx="4" transform="rotate(8 50 32)" fill="#dd3f35" stroke="#13242c" stroke-width="3"/></svg>',
+ playon:'<svg viewBox="0 0 200 48"><path d="M30 10l22 14-22 14M70 10l22 14-22 14M110 10l22 14-22 14" fill="none" stroke="#1f9a5a" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/></svg>'};
+
+/* ---------- game flow ---------- */
+function intro(){
+  show(`<span class="who">VAR-MÍSTNOST, BEZ OKEN</span><h2>Směna operátora VAR</h2>
+  <p>Rozhodčí na hřišti si není jistý. Ty máš záznam. Přetoč ho, přibliž kameru, najdi ten moment a rozhodni.</p>
+  <p>Osm případů. Tři chyby a jsi venku. Během směny ti může někdo zavolat s nabídkou.</p>
+  <p>Ofsajd, faul nebo ruka? Hledej, kdo byl kde a kdo zahrál míč.${best?` Tvůj rekord: ${best} bodů.`:''}</p>
+  <div class="acts"><button class="btn go" data-a="start">Nastoupit do směny</button></div>`);
+}
+function startShift(){
+  Object.assign(G,{i:0,ok:0,done:0,mist:0,corrupt:0,cash:0,score:0});
+  const kinds=shuffle(['off','off','foul','foul','hand','hand',pick(['off','foul','hand']),pick(['off','foul','hand'])]);
+  G.cases=kinds;G.bribeAt=shuffle([2,3,4,5,6,7]).slice(0,2);
+  loadCase();
+}
+function loadCase(){
+  hide();const sc=MAKE[G.cases[G.i]]();G.sc=sc;
+  G.line=false;$('bLine').classList.remove('on');$('bLine').style.visibility=sc.lines?'visible':'hidden';
+  cam.x=50;cam.y=sc.kind==='off'?35:30;cam.z=1;G.rate=1;$('bSlow').classList.remove('on');
+  G.bribeSeen=false;G.took=false;G.t0=performance.now();
+  $('call').innerHTML=`<span>Hlas v uchu</span>${sc.call}`;
+  setT(0);setPlay(true);hud();
+}
+function openSheet(){
+  if(G.locked)return;
+  if(G.bribeAt.includes(G.i)&&!G.bribeSeen){
+    G.bribeSeen=true;const wish=WISH[G.sc.truth];
+    show(`<span class="who">ZVONÍ TELEFON · Č. NEZNÁMÉ</span><h2>Pan Havlík, předseda klubu</h2>
+    <p>„Poslouchej, budu stručný. Máme s týmem dohodu. Radši se tvař, že jsi nic neviděl. Zítra ti pošlu obálku.“</p>
+    <p>Chce od tebe: <b>${LBL[wish]}</b>. Nabízí ${BRIBE.toLocaleString('cs-CZ')} Kč.</p>
+    <div class="acts"><button class="btn" data-a="refuse">Odmítnout</button><button class="btn go" data-a="take">Vzít obálku</button></div>`);
+    return;
+  }
+  setPlay(false);
+  show(`<div class="sheetHead"><span class="who">KARTA AKCE</span><button class="btn" style="flex:0 0 auto;min-height:36px;padding:0 12px" data-a="close">Zpět k záznamu</button></div>
+  <div class="cards">${['goal','nogoal','yellow','red','playon'].map(v=>`<button class="card" data-v="${v}">${ICO[v]}<span class="cl">${LBL[v]}</span><i class="bar"></i></button>`).join('')}</div>`,true);
+}
+function decide(v){
+  const sc=G.sc,secs=(performance.now()-G.t0)/1000,good=v===sc.truth,wish=WISH[sc.truth];
+  let pts=0,note='';
+  G.done++;
+  if(good){G.ok++;pts=100+Math.max(0,Math.round(50-secs*1.2));G.score+=pts}else G.mist++;
+  if(G.took){
+    if(v===wish){G.corrupt++;note='Klub je spokojený. Obálka zůstává u tebe.'}
+    else if(good){G.cash-=BRIBE;note='Rozhodl jsi správně a obálku jsi vrátil. Pan Havlík si to zapamatuje.'}
+  }else if(G.bribeAt.includes(G.i)&&good)note='Telefon jsi nechal vyzvánět a rozhodl poctivě.';
+  if(G.took&&v===wish)G.cash+=BRIBE;
+  G.t=sc.keyT;setT(sc.keyT);if(sc.lines)G.line=true;$('bLine').classList.toggle('on',G.line);
+  hud();
+  const over=G.mist>=3,last=G.i>=NC-1;
+  show(`<div><span class="chip ${good?'ok':'bad'}">${good?`Správně +${pts}`:'Chyba'}</span></div>
+  <h2>${LBL[sc.truth]}</h2><p>${sc.why}</p>${good?'':`<p>Ty jsi rozhodl: ${LBL[v]}.</p>`}${note?`<p>${note}</p>`:''}
+  <div class="acts"><button class="btn go" data-a="${over||last?'end':'next'}">${over||last?'Konec směny':'Další případ'}</button></div>`,true);
+}
+function ending(){
+  const f=G.mist>=3,c=G.corrupt;
+  const total=G.score;let title,txt;
+  if(f){title='Vyhozen';txt='Po třetí chybě ti vzali kartu do místnosti. Zítra tě zastoupí kolega.'}
+  else if(c>=2){title='Disciplinární komise';txt='Zápisy z telefonů, převody v hotovosti a dvě sporná rozhodnutí. Zákaz činnosti na neurčito.'}
+  else if(c===1){title='Prošlo to. Zatím.';txt='Jednu obálku máš doma. Příští týden se vyšetřovatelé budou ptát na jedno z tvých rozhodnutí.'}
+  else if(G.ok===NC){title='Rozhodčí roku';txt='Osm z osmi a čisté svědomí. Nikdo ti nezavolá, protože ví, že to nemá smysl.'}
+  else{title='Solidní směna';txt='Pár chyb, žádná obálka. Dá se z toho žít.'}
+  if(total>best){best=total;try{localStorage.setItem('var-best',String(best))}catch(e){}}
+  show(`<span class="who">KONEC SMĚNY</span><h2>${title}</h2><p>${txt}</p>
+  <div class="stats"><div><b>${G.ok}/${G.done}</b><span>Přesnost</span></div><div><b>${total}</b><span>Body</span></div>
+  <div><b>${G.cash.toLocaleString('cs-CZ')}</b><span>Kč v kapse</span></div><div><b>${best}</b><span>Rekord</span></div></div>
+  <div class="acts"><button class="btn go" data-a="start">Nová směna</button></div>`);
+}
+
+/* ---------- input ---------- */
+$('back').addEventListener('click',e=>{
+  const c=e.target.closest('[data-v],[data-a]');if(!c)return;
+  if(c.dataset.v){decide(c.dataset.v);return}
+  const a=c.dataset.a;
+  if(a==='start')startShift();
+  else if(a==='next'){G.i++;loadCase()}
+  else if(a==='end'){G.i=NC;hud();ending()}
+  else if(a==='close'){hide()}
+  else if(a==='take'){G.took=true;G.cash+=BRIBE;hud();hide();openSheet()}
+  else if(a==='refuse'){G.took=false;hide();openSheet()}
+});
+$('sl').addEventListener('input',e=>{if(G.locked)return;setPlay(false);setT(e.target.value/100)});
+$('bPlay').onclick=()=>{if(G.locked)return;if(G.t>=T)setT(0);setPlay(!G.playing)};
+const step=d=>{if(G.locked)return;setPlay(false);setT(G.t+d*.05)};
+$('bBack').onclick=()=>step(-1);$('bFwd').onclick=()=>step(1);
+$('bSlow').onclick=()=>{G.rate=G.rate===1?.25:1;$('bSlow').classList.toggle('on',G.rate!==1)};
+$('bLine').onclick=()=>{G.line=!G.line;$('bLine').classList.toggle('on',G.line)};
+$('bDecide').onclick=openSheet;
+const clampCam=()=>{cam.z=Math.max(1,Math.min(4,cam.z));cam.x=Math.max(0,Math.min(100,cam.x));cam.y=Math.max(0,Math.min(70,cam.y))};
+const pan=(dx,dy)=>{cam.x+=dx*3/cam.z;cam.y+=dy*3/cam.z;clampCam()};
+const zoom=d=>{cam.z*=d>0?1.2:1/1.2;clampCam()};
+function hold(btn,fn){let iv;const go=e=>{e.preventDefault();fn();iv=setInterval(fn,70)},stop=()=>clearInterval(iv);
+  btn.addEventListener('pointerdown',go);['pointerup','pointerleave','pointercancel'].forEach(n=>btn.addEventListener(n,stop))}
+document.querySelectorAll('[data-pan]').forEach(b=>{const[x,y]=b.dataset.pan.split(',').map(Number);hold(b,()=>pan(x,y))});
+document.querySelectorAll('[data-zoom]').forEach(b=>hold(b,()=>zoom(+b.dataset.zoom)));
+addEventListener('keydown',e=>{
+  if(G.locked)return;const k=e.key.toLowerCase();
+  if(k==='w')pan(0,-1);else if(k==='s')pan(0,1);else if(k==='a')pan(-1,0);else if(k==='d')pan(1,0);
+  else if(k==='q')zoom(-1);else if(k==='e')zoom(1);
+  else if(k==='arrowleft'){step(-1);e.preventDefault()}else if(k==='arrowright'){step(1);e.preventDefault()}
+  else if(k===' '){$('bPlay').click();e.preventDefault()}else if(k==='enter')openSheet();
+});
+cv.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1:-1)},{passive:false});
+
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(G.playing&&!G.locked){setT(G.t+dt*G.rate);if(G.t>=T)setPlay(false)}
+  draw();requestAnimationFrame(loop);
+}
+hud();intro();requestAnimationFrame(loop);
+})();
+</script>
+
+</body></html>

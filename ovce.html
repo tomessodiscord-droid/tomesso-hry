@@ -1,0 +1,2188 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ovce Bourač</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<style>
+/* Layout: jedna obrazovka. Nahoře plechová cedule s hrdinkou, uprostřed 3D scéna se zdí, dole tabule s vylepšeními.
+   Vizuální jazyk stavby: beton, výstražná páska, razítkové stíny. Jedno záměrné světlé téma. */
+:root {
+  --bg: #d6d1c4;
+  --plate: #ece9e0;
+  --well: #c9c3b4;
+  --ink: #1c1a17;
+  --ink-soft: #585347;
+  --hazard: #f2b705;
+  --signal: #d8402a;
+  --steel: #33414c;
+  --paper: #f7f5ef;
+  --f-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --f-body: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(28, 26, 23, .07) 1px, transparent 1.3px);
+  background-size: 6px 6px;
+  color: var(--ink);
+  font: 500 15px/1.3 var(--f-body);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+
+.app {
+  height: 100%;
+  max-width: 600px;
+  margin-inline: auto;
+  padding-inline: 16px;
+  padding-block: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- Horní cedule ---------- */
+.top { flex: none; background: var(--plate); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); border-radius: 3px; }
+.tape { height: 9px; border-bottom: 2px solid var(--ink); background: repeating-linear-gradient(-45deg, var(--hazard) 0 9px, var(--ink) 9px 18px); }
+.hero-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 12px 6px; }
+.lbl { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
+.lvl { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+.lvl b { font: 900 44px/.9 var(--f-display); font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+.lvl.pulse b { animation: lvpulse .6s ease-out; }
+@keyframes lvpulse { 0% { transform: scale(1.35); color: var(--signal); } 100% { transform: scale(1); } }
+.who { min-width: 0; }
+.who .title { font: 800 19px/1 var(--f-display); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar { height: 10px; margin-top: 5px; border: 2px solid var(--ink); background: var(--well); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--hazard); }
+.xptx { margin-top: 3px; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.purse { display: flex; flex-direction: column; align-items: flex-end; line-height: 1; gap: 3px; }
+.purse .row { display: flex; align-items: center; gap: 6px; }
+.purse b { font: 800 28px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.purse.pulse b { animation: lvpulse .35s ease-out; }
+.coin { display: inline-block; flex: none; width: 17px; height: 17px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe27a 0 28%, var(--hazard) 60%); border: 2px solid var(--ink); position: relative; }
+.coin::after { content: ""; position: absolute; inset: 3px; border: 1.5px solid rgba(28, 26, 23, .55); border-radius: 50%; }
+
+.wallbar { padding: 6px 12px 9px; border-top: 2px solid var(--ink); }
+.wallbar .wl { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.wallbar .wn { font: 800 18px/1 var(--f-display); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+.wallbar .wm { font-size: 13px; color: var(--ink-soft); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.wallbar .hpt { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.wallbar .bar { height: 14px; margin-top: 6px; }
+.wallbar .bar i { background: var(--signal); transition: width .08s linear; }
+.wallbar.boss .wn { color: var(--signal); }
+.wallbar.boss .bar i { background: repeating-linear-gradient(-45deg, var(--hazard) 0 8px, var(--ink) 8px 16px); animation: stripes .9s linear infinite; }
+@keyframes stripes { to { background-position-x: 22.63px; } }
+
+/* ---------- Scéna ---------- */
+.stage {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 190px;
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  border-radius: 3px;
+  overflow: hidden;
+  background: #2b2a3f;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: manipulation; }
+.hint { position: absolute; left: 10px; top: 10px; padding: 4px 12px; background: rgba(28, 26, 23, .8); color: var(--paper); font: 800 15px/1.2 var(--f-display); letter-spacing: .1em; text-transform: uppercase; pointer-events: none; white-space: nowrap; max-width: 52%; overflow: hidden; text-overflow: ellipsis; animation: hintpulse 1.4s ease-in-out infinite; }
+.hint[hidden] { display: none !important; }
+@keyframes hintpulse { 50% { opacity: .5; } }
+.combo { position: absolute; right: 8px; top: 8px; text-align: right; pointer-events: none; font: 900 26px/1 var(--f-display); letter-spacing: .03em; text-transform: uppercase; color: var(--hazard); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; text-shadow: 2px 2px 0 var(--ink); transition: opacity .15s; }
+.combo small { display: block; font: 800 13px/1.1 var(--f-display); letter-spacing: .1em; color: var(--paper); -webkit-text-stroke: 0; text-shadow: 1px 1px 0 var(--ink); margin-top: 2px; }
+.combo[hidden] { display: none !important; }
+.combo.bump { animation: lvpulse .18s ease-out; }
+.note { position: absolute; left: 50%; top: 44px; transform: translateX(-50%); width: max-content; max-width: 90%; padding: 4px 10px; background: var(--hazard); color: var(--ink); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); font: 800 14px/1.15 var(--f-display); letter-spacing: .06em; text-transform: uppercase; text-align: center; pointer-events: none; opacity: 0; transition: opacity .2s; }
+.note.show { opacity: 1; }
+.cd { position: absolute; left: 8px; bottom: 8px; width: 74px; height: 10px; border: 2px solid var(--ink); background: rgba(28, 26, 23, .55); border-radius: 2px; overflow: hidden; pointer-events: none; }
+.cd i { display: block; height: 100%; width: 100%; background: var(--hazard); }
+.banner { position: absolute; left: 0; right: 0; top: 14%; text-align: center; font: 900 clamp(30px, 11vw, 58px)/1 var(--f-display); letter-spacing: .02em; text-transform: uppercase; color: var(--hazard); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 3px 3px 0 var(--ink); pointer-events: none; opacity: 0; padding-inline: 8px; }
+.banner.go { animation: pop 1.3s ease-out forwards; }
+@keyframes pop {
+  0% { opacity: 0; transform: scale(.4) rotate(-4deg); }
+  14% { opacity: 1; transform: scale(1.15) rotate(-2deg); }
+  26% { transform: scale(1) rotate(-2deg); }
+  78% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-18px) scale(1) rotate(-2deg); }
+}
+
+/* ---------- Tabule s vylepšeními ---------- */
+.shop { flex: none; max-height: 40%; overflow-y: auto; overscroll-behavior: contain; background: var(--plate); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); border-radius: 3px; padding: 8px 12px 6px; }
+.shop-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.shop-head h2 { margin: 0; font: 900 21px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; }
+.seg { display: flex; border: 2px solid var(--ink); border-radius: 2px; overflow: hidden; }
+.seg button { appearance: none; border: 0; border-left: 2px solid var(--ink); background: var(--paper); padding: 4px 11px; font: 800 15px/1 var(--f-display); letter-spacing: .06em; cursor: pointer; }
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--hazard); }
+.stats { margin: 5px 0 2px; font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.stats b { color: var(--ink); font-weight: 600; }
+.up { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding-block: 7px; border-top: 1.5px dashed rgba(28, 26, 23, .4); }
+.up .ic { width: 40px; height: 40px; background: var(--hazard); border: 2px solid var(--ink); display: grid; place-items: center; }
+.up .ic svg { width: 24px; height: 24px; fill: var(--ink); }
+.up .nm { font: 800 19px/1.05 var(--f-display); text-transform: uppercase; letter-spacing: .04em; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.up .lv { font: 600 12px/1 var(--f-body); letter-spacing: .04em; background: var(--ink); color: var(--paper); padding: 2px 6px; }
+.up .ef { font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; margin-top: 2px; overflow-wrap: anywhere; }
+.buy { appearance: none; min-width: 100px; min-height: 46px; padding: 3px 10px; border: 2px solid var(--ink); border-radius: 3px; background: var(--well); color: var(--ink-soft); box-shadow: 2px 2px 0 var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; font-family: var(--f-display); }
+.buy .bq { font-weight: 800; font-size: 13px; letter-spacing: .1em; line-height: 1; }
+.buy .bc { display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 20px; line-height: 1; font-variant-numeric: tabular-nums; }
+.buy .coin { width: 14px; height: 14px; }
+.buy .coin::after { inset: 2px; }
+.buy.can { background: var(--hazard); color: var(--ink); }
+.buy.can:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+.buy.maxed { background: var(--ink); color: var(--hazard); }
+.buy.nope { animation: nope .3s; }
+@keyframes nope { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 4px 14px; flex-wrap: wrap; padding-top: 6px; border-top: 1.5px dashed rgba(28, 26, 23, .4); font-size: 13px; }
+.foot button { appearance: none; background: none; border: 0; padding: 5px 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; color: var(--ink-soft); text-align: left; }
+.foot label.snd { display: flex; align-items: center; gap: 6px; color: var(--ink-soft); }
+.foot select { font: 500 13px/1.2 var(--f-body); color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: 3px; padding: 3px 6px; cursor: pointer; }
+.foot .rec { color: var(--ink-soft); padding: 4px 0; }
+.shear { width: 100%; margin-top: 6px; appearance: none; border: 2px solid var(--ink); background: var(--paper); border-radius: 3px; padding: 7px 10px; font: 800 17px/1.1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; gap: 10px; align-items: center; box-shadow: 2px 2px 0 var(--ink); }
+.shear span:last-child { font: 500 13px/1.2 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink-soft); text-align: right; }
+.shear[aria-disabled="true"] { opacity: .55; box-shadow: none; }
+.shear.ready { background: #fff; }
+.shear.arm { background: var(--signal); color: var(--paper); }
+.shear.arm span:last-child { color: var(--paper); }
+
+.mapbtn { position: absolute; right: 8px; bottom: 8px; max-width: 64%; appearance: none; border: 2px solid var(--ink); background: var(--plate); border-radius: 3px; box-shadow: 2px 2px 0 var(--ink); padding: 6px 10px; font: 800 14px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.mapbtn:active { transform: translate(2px, 2px); box-shadow: none; }
+.maps { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgba(28, 26, 23, .74); }
+.maps[hidden] { display: none; }
+.maps .panel { width: 100%; max-width: 600px; max-height: 90%; display: flex; flex-direction: column; background: var(--plate); border: 2px solid var(--ink); border-bottom: 0; border-radius: 3px 3px 0 0; }
+.maps .ph { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 2px solid var(--ink); }
+.maps h2 { margin: 0; font: 900 24px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; }
+.maps .ph small { display: block; margin-top: 3px; font: 500 13px/1.2 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.maps .x { appearance: none; border: 2px solid var(--ink); background: var(--paper); border-radius: 3px; box-shadow: 2px 2px 0 var(--ink); min-width: 44px; min-height: 44px; font: 900 22px/1 var(--f-display); cursor: pointer; }
+.mgrid { overflow-y: auto; overscroll-behavior: contain; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px 16px 18px; }
+.mc { appearance: none; text-align: left; display: flex; flex-direction: column; gap: 4px; padding: 0 0 8px; overflow: hidden; border: 2px solid var(--ink); border-radius: 3px; background: var(--paper); box-shadow: 2px 2px 0 var(--ink); cursor: pointer; }
+.mc .msky { display: block; height: 22px; border-bottom: 2px solid var(--ink); }
+.mc .mn { padding: 0 9px; font: 800 17px/1.1 var(--f-display); letter-spacing: .03em; text-transform: uppercase; }
+.mc .mnum { display: inline-block; min-width: 22px; padding: 1px 4px; margin-right: 3px; background: var(--ink); color: var(--hazard); text-align: center; font-size: 14px; }
+.mc .mp { padding: 0 9px; font-size: 13px; color: var(--ink-soft); }
+.mc .mbar { display: block; height: 8px; margin: 2px 9px 0; border: 1.5px solid var(--ink); background: var(--well); }
+.mc .mbar i { display: block; height: 100%; background: var(--hazard); }
+.mc[aria-current="true"] { outline: 3px solid var(--signal); outline-offset: 1px; }
+.mc.lock { opacity: .55; filter: grayscale(1); box-shadow: none; cursor: not-allowed; }
+.mc.nope { animation: nope .3s; }
+
+.trophy { position: absolute; right: 8px; bottom: 46px; appearance: none; border: 2px solid var(--ink); background: var(--plate); border-radius: 3px; box-shadow: 2px 2px 0 var(--ink); padding: 6px 10px; font: 800 14px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; cursor: pointer; }
+.trophy:active { transform: translate(2px, 2px); box-shadow: none; }
+.lb { overflow-y: auto; overscroll-behavior: contain; padding: 4px 16px 16px; }
+.lbr { display: grid; grid-template-columns: 34px minmax(0, 1fr) 74px 44px 44px; gap: 6px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--well); font: 600 15px/1.15 var(--f-body); }
+.lbr.hd { position: sticky; top: 0; background: var(--plate); border-bottom: 2px solid var(--ink); font: 800 12px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.lbr .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+.lbr.me { background: var(--hazard); }
+.lbr span:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
+.lbr .bt { font: 700 11px/1 var(--f-body); color: var(--ink-soft); letter-spacing: .04em; text-transform: uppercase; }
+.abils { position: absolute; right: 8px; top: 46px; display: flex; flex-direction: column; gap: 8px; z-index: 3; }
+.ab { position: relative; overflow: hidden; width: 62px; min-height: 56px; appearance: none; border: 2px solid var(--ink); background: var(--plate); border-radius: 3px; box-shadow: 2px 2px 0 var(--ink); padding: 4px 2px 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: 800 10px/1 var(--f-display); letter-spacing: 0; text-transform: uppercase; color: var(--ink); }
+.ab b { font-size: 22px; line-height: 1; }
+.ab i { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(28, 26, 23, .5); pointer-events: none; }
+.ab:active { transform: translate(2px, 2px); box-shadow: none; }
+.ab.lk { opacity: .55; filter: grayscale(1); cursor: not-allowed; }
+.ab.on { background: var(--hazard); }
+.ab.rd:not(.lk) { outline: 2px solid var(--signal); outline-offset: 1px; }
+.skg { overflow-y: auto; overscroll-behavior: contain; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 10px 16px 18px; }
+.sk { appearance: none; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; border: 2px solid var(--ink); border-radius: 3px; background: var(--paper); box-shadow: 2px 2px 0 var(--ink); cursor: pointer; font: 700 12px/1.15 var(--f-body); color: var(--ink); }
+.sk .sw { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--ink); }
+.sk .sw::after { content: ""; position: absolute; left: 50%; top: -6px; width: 22px; height: 11px; margin-left: -11px; border-radius: 11px 11px 2px 2px; background: var(--helm, #f2b705); border: 2px solid var(--ink); }
+.sk .sw::before { content: ""; position: absolute; left: 50%; bottom: 2px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--hide, #3a322c); border: 1.5px solid var(--ink); z-index: 1; }
+.sk small { font: 800 10px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; }
+.sk.lock { opacity: .5; filter: grayscale(1); box-shadow: none; cursor: default; }
+.sk[aria-pressed="true"] { outline: 3px solid var(--signal); outline-offset: 1px; background: var(--hazard); }
+.r-c small { color: #6b665c; } .r-u small { color: #2f7d4f; } .r-r small { color: #2b6fd0; } .r-e small { color: #8a3fc4; } .r-l small { color: #c98a00; }
+.crate { margin: 12px 16px 0; padding: 12px; border: 2px dashed var(--ink); border-radius: 3px; background: var(--paper); text-align: center; }
+.crate button { appearance: none; border: 2px solid var(--ink); background: var(--hazard); border-radius: 3px; box-shadow: 2px 2px 0 var(--ink); min-height: 48px; padding: 0 18px; font: 900 18px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.crate .bx { font-size: 54px; line-height: 1; display: block; margin-bottom: 8px; }
+.crate .bx.shk { animation: nope .12s infinite; }
+.crate p { margin: 8px 0 0; font: 600 14px/1.3 var(--f-body); }
+.skbtn { width: 100%; margin-top: 6px; appearance: none; border: 2px solid var(--ink); background: var(--paper); border-radius: 3px; padding: 9px 10px; font: 800 17px/1.1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; gap: 10px; box-shadow: 2px 2px 0 var(--ink); color: var(--ink); }
+.skbtn span:last-child { font: 500 13px/1.2 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.skbtn.has { background: var(--hazard); }
+.lbr .mt { font: 800 10px/1 var(--f-display); color: #c98a00; letter-spacing: .06em; }
+.lbmsg { padding: 18px 16px; color: var(--ink-soft); font: 500 15px/1.4 var(--f-body); }
+.nmf { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.nmf input { font: 700 20px/1 var(--f-body); padding: 12px; border: 2px solid var(--ink); border-radius: 3px; background: var(--paper); color: var(--ink); min-height: 48px; }
+.nmf button { appearance: none; border: 2px solid var(--ink); background: var(--hazard); border-radius: 3px; box-shadow: 2px 2px 0 var(--ink); min-height: 48px; font: 900 18px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.nmf .err { min-height: 1.2em; color: var(--signal); font: 700 14px/1.2 var(--f-body); }
+.nmf p { margin: 0; color: var(--ink-soft); font: 500 14px/1.4 var(--f-body); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hint, .wallbar.boss .bar i, .lvl.pulse b, .purse.pulse b, .buy.nope, .combo.bump { animation: none; }
+  .banner.go { animation: fade 1.3s linear forwards; }
+  @keyframes fade { 0% { opacity: 0; } 15%, 75% { opacity: 1; } 100% { opacity: 0; } }
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="tape" aria-hidden="true"></div>
+    <div class="hero-card">
+      <div class="lvl" id="lvlBox"><span class="lbl">Level</span><b id="lvl">1</b></div>
+      <div class="who">
+        <div class="title" id="title">Jehně</div>
+        <div class="bar" role="progressbar" aria-label="Zkušenosti" aria-valuemin="0" aria-valuemax="100" id="xpbar"><i id="xpfill"></i></div>
+        <div class="xptx" id="xptx">0 / 12 XP</div>
+      </div>
+      <div class="purse" id="purse">
+        <span class="lbl">Zlaťáky</span>
+        <div class="row"><i class="coin"></i><b id="gold">0</b></div>
+      </div>
+    </div>
+    <div class="wallbar" id="wallbar">
+      <div class="wl">
+        <span class="wn" id="wname">Zeď 1</span>
+        <span class="wm" id="wmat">Cihlová zeď</span>
+        <span class="hpt" id="hpt">8 / 8</span>
+      </div>
+      <div class="bar" role="progressbar" aria-label="Zbývající pevnost zdi" aria-valuemin="0" aria-valuemax="100" id="hpbar"><i id="hpfill" style="width:100%"></i></div>
+    </div>
+  </header>
+
+  <main class="stage" id="stage" tabindex="0" aria-label="3D scéna. Klepni na zeď, nejlépe na zářící slabé místo. Mezerník udeří doprostřed zdi.">
+    <canvas id="cv" role="img" aria-label="Ovce v přilbě s kladivem bourá cihlovou zeď"></canvas>
+    <div class="combo" id="combo" hidden></div>
+    <div class="cd" id="cd" aria-hidden="true"><i id="cdfill"></i></div>
+    <div class="hint" id="hint">Klepej na slabinu!</div>
+    <div class="note" id="note" role="status"></div>
+    <div class="banner" id="banner" aria-live="polite"></div>
+    <button class="trophy" id="lbBtn" type="button" aria-haspopup="dialog">🏆 Žebříček</button>
+    <button class="mapbtn" id="mapBtn" type="button" aria-haspopup="dialog">Mapa 1</button>
+  </main>
+
+  <section class="shop" aria-label="Vylepšení">
+    <div class="shop-head">
+      <h2>Vylepšení</h2>
+      <div class="seg" role="group" aria-label="Kolik levelů koupit najednou">
+        <button type="button" data-m="1" aria-pressed="true">×1</button>
+        <button type="button" data-m="10" aria-pressed="false">×10</button>
+        <button type="button" data-m="0" aria-pressed="false">MAX</button>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div id="ups"></div>
+    <button class="shear" id="shearBtn" type="button" aria-disabled="true"><span>Ostříhat vlnu</span><span id="shearTx">Od zdi 15</span></button>
+    <button class="skbtn" id="skBtn" type="button" aria-haspopup="dialog"><span>Skiny a bedny</span><span id="skTx"></span></button>
+    <div class="foot">
+      <span class="rec" id="rec">Rekord: zeď 1</span>
+      <label class="snd">Zvuk <select id="sndSel" aria-label="Zvuková sada"></select></label>
+      <button type="button" id="rstBtn">Smazat postup</button>
+    </div>
+  </section>
+</div>
+
+<div class="maps" id="maps" hidden role="dialog" aria-modal="true" aria-labelledby="mapsT">
+  <div class="panel">
+    <div class="ph"><div><h2 id="mapsT">Mapy</h2><small>Každá má 50 zdí a dva bossy. Další se odemkne po dokončení předchozí.</small></div><button class="x" id="mapsX" type="button" aria-label="Zavřít">×</button></div>
+    <div class="mgrid" id="mgrid"></div>
+  </div>
+</div>
+
+<div class="maps" id="board" hidden role="dialog" aria-modal="true" aria-labelledby="boardT">
+  <div class="panel">
+    <div class="ph"><div><h2 id="boardT">Žebříček</h2><small id="boardSub">Kdo došel nejdál.</small></div><button class="x" id="boardX" type="button" aria-label="Zavřít">×</button></div>
+    <div class="lb" id="lb"></div>
+  </div>
+</div>
+<div class="maps" id="nameDlg" hidden role="dialog" aria-modal="true" aria-labelledby="nameT">
+  <div class="panel">
+    <div class="ph"><div><h2 id="nameT">Jak se jmenuješ?</h2><small>Jméno uvidí ostatní v žebříčku.</small></div></div>
+    <form class="nmf" id="nameForm" autocomplete="off">
+      <input id="nameIn" type="text" maxlength="14" minlength="3" required placeholder="Tvoje jméno" aria-label="Jméno hráče" spellcheck="false">
+      <div class="err" id="nameErr" role="alert"></div>
+      <p>3 až 14 znaků: písmena, čísla, mezera, tečka, pomlčka nebo podtržítko. Jméno už později nepůjde změnit.</p>
+      <button type="submit" id="nameGo">Začít hrát</button>
+    </form>
+  </div>
+</div>
+
+<div class="maps" id="skins" hidden role="dialog" aria-modal="true" aria-labelledby="skinsT">
+  <div class="panel">
+    <div class="ph"><div><h2 id="skinsT">Skiny</h2><small id="skinsSub"></small></div><button class="x" id="skinsX" type="button" aria-label="Zavřít">×</button></div>
+    <div id="crateBox"></div>
+    <div class="skg" id="skg"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var RM = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var BIG = 1e300;
+  var clampBig = function (x) { return x > BIG ? BIG : x; };
+
+  /* =========================================================
+     Ekonomika. Zdi i ovce rostou bez horní hranice.
+     Zdi rostou o něco rychleji než levely, takže postup časem zpomaluje.
+     Pak se vyplatí ostříhat vlnu (restart s trvalým bonusem).
+     ========================================================= */
+  var MAP_N = 20, PER = 50, TOP_W = MAP_N * PER;
+  var mapOf = function (w) { return Math.max(1, Math.min(MAP_N, Math.floor((w - 1) / PER) + 1)); };
+  var stOf = function (w) { return ((Math.max(1, w) - 1) % PER) + 1; };
+  var isBoss = function (w) { var s = stOf(w); return s === 25 || s === 50; };
+  // Boss: čím vyšší mapa, tím víc životů, rychlejší údery, víc pancíře a kratší slabiny. Závěrečný boss mapy je navíc horší.
+  function bossTune(w) {
+    var m = mapOf(w), fin = stOf(w) === PER;
+    return { hpM: (3 + 0.5 * m) * (fin ? 1.6 : 1), idle: Math.max(1.5, 3.6 - 0.11 * (m - 1) - (fin ? 0.3 : 0)), tele: Math.max(0.85, 1.7 - 0.045 * (m - 1) - (fin ? 0.1 : 0)),
+      enr: Math.min(0.55, 0.33 + 0.009 * m + (fin ? 0.07 : 0)), arm: Math.max(0.15, 0.35 - 0.01 * (m - 1)), wk: Math.max(0.65, 1 - 0.018 * (m - 1)), dbl: fin ? 0.35 : (m >= 8 ? 0.15 : 0) };
+  }
+  var LG = Math.pow(1.10, 0.86);
+  var ECON = {
+    wallHp: function (w) { return clampBig(8 * Math.pow(1.10, w - 1) * (isBoss(w) ? bossTune(w).hpM : 1)); },
+    wallGold: function (w) { return clampBig(5 * Math.pow(1.085, w - 1) * (isBoss(w) ? 5 : 1)); },
+    wallXp: function (w) { return clampBig(4 * Math.pow(1.12, w - 1) * (isBoss(w) ? 3 : 1)); },
+    xpNeed: function (L) { return clampBig(12 * Math.pow(1.12, L - 1)); },
+    levelMult: function (L) { return Math.pow(LG, L - 1); }
+  };
+  var COMBO_WINDOW = 1.2, COMBO_CAP = 30, COMBO_STEP = 0.03;
+  var DOG_RATE = 0.05, WOOL_STEP = 0.2, SPD_CAP = 30;
+  var swingCdOf = function (n) { return Math.max(0.14, 0.5 * Math.pow(0.96, Math.min(n, SPD_CAP))); };
+
+  var ICON = {
+    pow: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="10.5" y="8" width="3" height="14" rx="1"/><rect x="4" y="2.5" width="16" height="7.5" rx="1.5"/></svg>',
+    spd: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 1.5 5 13.5h6l-1.5 9 9.5-13h-6.2z"/></svg>',
+    weak: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zm0 3a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zm0 3.2a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6z"/><rect x="11" y=".5" width="2" height="5"/><rect x="11" y="18.5" width="2" height="5"/><rect x=".5" y="11" width="5" height="2"/><rect x="18.5" y="11" width="5" height="2"/></svg>',
+    gold: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zm0 3.2a6.3 6.3 0 1 1 0 12.6 6.3 6.3 0 0 1 0-12.6z"/><rect x="10.7" y="8" width="2.6" height="8" rx="1"/></svg>',
+    dog: '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="16.5" rx="5.5" ry="4.5"/><ellipse cx="4.8" cy="10.5" rx="2.4" ry="3.1"/><ellipse cx="9.3" cy="5.6" rx="2.4" ry="3.1"/><ellipse cx="14.7" cy="5.6" rx="2.4" ry="3.1"/><ellipse cx="19.2" cy="10.5" rx="2.4" ry="3.1"/></svg>'
+  };
+  var UP = {
+    pow:  { name: 'Těžké kladivo', base: 10, grow: 1.3, eff: function (n) { return 1 + 0.4 * n; },
+            fx: function (a, b) { return 'Síla úderu ×' + fmt(UP.pow.eff(a)) + ' → ×' + fmt(UP.pow.eff(b)); } },
+    spd:  { name: 'Rychlý švih', base: 25, grow: 1.3, cap: SPD_CAP, eff: swingCdOf,
+            fx: function (a, b) { return a >= SPD_CAP ? 'Maximum: švih každých ' + fmt(swingCdOf(a)) + ' s' : 'Švih každých ' + fmt(swingCdOf(a)) + ' s → ' + fmt(swingCdOf(b)) + ' s'; } },
+    weak: { name: 'Zásah do slabiny', base: 40, grow: 1.3, eff: function (n) { return 3 + 0.15 * n; },
+            fx: function (a, b) { return 'Zásah slabiny ×' + fmt(UP.weak.eff(a)) + ' → ×' + fmt(UP.weak.eff(b)); } },
+    gold: { name: 'Zlatá kapsa', base: 30, grow: 1.3, eff: function (n) { return 1 + 0.15 * n; },
+            fx: function (a, b) { return 'Zlaťáky za zeď ×' + fmt(UP.gold.eff(a)) + ' → ×' + fmt(UP.gold.eff(b)); } },
+    dog:  { name: 'Ovčácký pes', base: 60, grow: 1.32, eff: function (n) { return DOG_RATE * n; },
+            fx: function (a, b) { return 'Pes kouše za sekundu ' + fmt(a * DOG_RATE * 100) + ' % → ' + fmt(b * DOG_RATE * 100) + ' % síly úderu'; } }
+  };
+  var UPS = ['pow', 'spd', 'weak', 'gold', 'dog'];
+
+  /* ---------- 20 map: téma, paleta, rekvizity, zeď a bossové ---------- */
+  var MAPS = [
+    { n: 'Staré Město', e: '🏰', st: ['city'], lamp: true, far: 'city', fc: 'rgba(24,22,38,.38)', sun: [0.72, 0.78, 0.07, '255,220,150'],
+      sky: [[43, 42, 63], [138, 75, 63], [240, 163, 90]], ground: [96, 80, 62], road: [66, 64, 68], edge: [200, 190, 150], bld: [52, 56, 82], pc: [150, 110, 60], pc2: [90, 70, 60], cc: [150, 110, 60],
+      mat: ['Cihlová zeď', 12, 55, 42], bh: [12, 45, 55], bn: ['Cihlový kolos', 'Pán radniční věže'] },
+    { n: 'Alpy', e: '🏔️', st: ['pine', 'hut', 'pine'], far: 'hills', fc: 'rgba(235,242,250,.6)', sun: [0.25, 0.35, 0.05, '255,250,230'],
+      sky: [[40, 84, 140], [110, 160, 210], [220, 235, 245]], ground: [232, 238, 244], road: [120, 125, 135], edge: [210, 215, 225], bld: [90, 90, 100], pc: [120, 80, 50], pc2: [78, 54, 48], cc: [130, 135, 145],
+      mat: ['Zeď z alpské žuly', 215, 10, 52], bh: [210, 18, 56], bn: ['Lavinový obr', 'Král Matterhornu'] },
+    { n: 'Řecko', e: '🏛️', st: ['temple', 'dome'], far: 'hills', fc: 'rgba(70,110,150,.35)', sun: [0.8, 0.3, 0.06, '255,250,220'],
+      sky: [[30, 100, 190], [90, 170, 230], [210, 235, 250]], ground: [196, 186, 150], road: [190, 175, 140], edge: [240, 235, 215], bld: [240, 240, 235], pc: [245, 244, 238], pc2: [40, 100, 190], cc: [210, 205, 190],
+      mat: ['Mramorová zeď', 40, 8, 78], bh: [205, 60, 58], bn: ['Kolos z Rhodu', 'Minotaur z mramoru'] },
+    { n: 'Egypt', e: '🔺', st: ['pyramid', 'palm', 'pyramid'], far: 'dunes', fc: 'rgba(150,100,50,.4)', sun: [0.5, 0.55, 0.1, '255,230,170'],
+      sky: [[200, 120, 60], [240, 180, 100], [250, 225, 160]], ground: [226, 196, 130], road: [190, 160, 100], edge: [235, 215, 160], bld: [200, 170, 110], pc: [216, 184, 116], pc2: [60, 140, 150], cc: [180, 150, 100],
+      mat: ['Pískovcová zeď', 38, 48, 60], bh: [45, 80, 52], bn: ['Sfingí strážce', 'Faraon Pískohněv'] },
+    { n: 'Savana', e: '🦁', st: ['acacia', 'acacia', 'hut', 'rock'], far: 'dunes', fc: 'rgba(120,60,30,.35)', sun: [0.3, 0.72, 0.12, '255,200,120'],
+      sky: [[230, 110, 50], [245, 170, 80], [252, 215, 140]], ground: [180, 150, 80], road: [150, 120, 70], edge: [210, 180, 110], bld: [150, 110, 70], pc: [176, 120, 70], pc2: [200, 170, 90], cc: [150, 125, 90],
+      mat: ['Hliněná zeď', 24, 45, 45], bh: [28, 65, 46], bn: ['Hliněný lev', 'Mamutí náčelník'] },
+    { n: 'Indie', e: '🕌', st: ['dome', 'dome', 'palm'], far: 'city', fc: 'rgba(90,40,70,.35)', sun: [0.7, 0.7, 0.09, '255,190,140'],
+      sky: [[120, 60, 130], [230, 120, 110], [255, 200, 140]], ground: [190, 150, 110], road: [160, 120, 90], edge: [225, 190, 140], bld: [200, 160, 140], pc: [248, 232, 210], pc2: [226, 150, 50], cc: [180, 140, 100],
+      mat: ['Růžový pískovec', 8, 45, 58], bh: [330, 55, 50], bn: ['Slon Rádža', 'Maharádža z Tádž'] },
+    { n: 'Thajsko', e: '🌴', st: ['palm', 'pagoda', 'palm'], far: 'hills', fc: 'rgba(20,90,100,.35)', sun: [0.78, 0.8, 0.08, '255,220,160'],
+      sky: [[20, 110, 150], [70, 190, 200], [255, 220, 160]], ground: [210, 190, 130], road: [140, 120, 90], edge: [225, 210, 160], bld: [180, 150, 90], pc: [226, 170, 60], pc2: [190, 40, 40], cc: [190, 170, 120],
+      mat: ['Zlatá chrámová zeď', 46, 75, 50], bh: [46, 80, 50], bn: ['Chrámový slon', 'Zlatý drak Nága'] },
+    { n: 'Japonsko', e: '🗾', st: ['pagoda', 'sakura', 'sakura'], lamp: true, far: 'hills', fc: 'rgba(120,90,130,.38)', sun: [0.5, 0.55, 0.12, '255,110,110'],
+      sky: [[250, 170, 190], [252, 210, 215], [255, 240, 235]], ground: [190, 200, 170], road: [120, 110, 110], edge: [235, 225, 220], bld: [150, 120, 120], pc: [210, 60, 55], pc2: [50, 40, 45], cc: [150, 150, 140],
+      mat: ['Šójí zeď', 30, 20, 80], bh: [355, 70, 46], bn: ['Obr Oni', 'Šógun Železný oblak'] },
+    { n: 'Čína', e: '🐉', st: ['pagoda', 'bamboo', 'pagoda'], lamp: true, far: 'hills', fc: 'rgba(70,70,80,.45)', sun: [0.22, 0.5, 0.06, '255,230,170'],
+      sky: [[60, 80, 100], [160, 130, 100], [240, 200, 130]], ground: [120, 140, 90], road: [90, 80, 70], edge: [200, 170, 110], bld: [150, 70, 60], pc: [190, 40, 30], pc2: [236, 184, 48], cc: [130, 130, 120],
+      mat: ['Velká zeď', 30, 18, 55], bh: [5, 78, 48], bn: ['Drak Dlouhozeď', 'Císař Nebeského hradu'] },
+    { n: 'Austrálie', e: '🦘', st: ['mesa', 'acacia', 'rock'], far: 'dunes', fc: 'rgba(160,70,40,.4)', sun: [0.5, 0.6, 0.1, '255,240,200'],
+      sky: [[40, 110, 200], [100, 170, 230], [250, 230, 190]], ground: [200, 120, 70], road: [170, 100, 60], edge: [225, 160, 110], bld: [190, 100, 60], pc: [196, 98, 52], pc2: [218, 130, 70], cc: [170, 95, 60],
+      mat: ['Rudá zeď z Uluru', 15, 65, 42], bh: [18, 80, 48], bn: ['Klokaní boxer', 'Král Outbacku'] },
+    { n: 'Amazonie', e: '🦜', st: ['jungle', 'jungle', 'palm'], far: 'hills', fc: 'rgba(10,70,50,.45)', sun: null,
+      sky: [[10, 60, 50], [40, 130, 90], [190, 230, 150]], ground: [60, 100, 50], road: [110, 90, 60], edge: [150, 130, 90], bld: [60, 90, 60], pc: [26, 110, 56], pc2: [70, 160, 80], cc: [90, 110, 70],
+      mat: ['Zeď z kmenů a lián', 100, 35, 32], bh: [120, 50, 40], bn: ['Anakondí kolos', 'Pán pralesa'] },
+    { n: 'Arktida', e: '🐧', st: ['ice', 'ice', 'rock'], far: 'hills', fc: 'rgba(220,240,255,.5)', sun: [0.7, 0.8, 0.05, '255,255,255'],
+      sky: [[20, 40, 90], [80, 140, 200], [200, 235, 250]], ground: [225, 240, 250], road: [170, 200, 225], edge: [235, 245, 252], bld: [150, 190, 220], pc: [186, 232, 255], pc2: [255, 255, 255], cc: [200, 220, 235],
+      mat: ['Ledová zeď', 190, 60, 66], bh: [190, 60, 62], bn: ['Mrazivý mamut', 'Ledový král'] },
+    { n: 'Mexiko', e: '🌵', st: ['pyramid', 'cactus', 'cactus', 'hut'], far: 'dunes', fc: 'rgba(150,50,30,.4)', sun: [0.4, 0.7, 0.11, '255,215,120'],
+      sky: [[190, 60, 40], [240, 130, 60], [255, 205, 120]], ground: [215, 170, 110], road: [170, 120, 80], edge: [235, 200, 140], bld: [200, 120, 80], pc: [196, 140, 86], pc2: [230, 120, 60], cc: [170, 130, 90],
+      mat: ['Aztécká zeď', 30, 40, 48], bh: [165, 50, 42], bn: ['Obsidiánový jaguár', 'Aztécký bůh slunce'] },
+    { n: 'Divoký západ', e: '🤠', st: ['hut', 'cactus', 'rock', 'mesa'], far: 'dunes', fc: 'rgba(120,50,50,.4)', sun: [0.65, 0.74, 0.1, '255,170,90'],
+      sky: [[90, 60, 110], [220, 110, 80], [255, 190, 110]], ground: [200, 150, 95], road: [150, 110, 75], edge: [225, 185, 125], bld: [150, 100, 70], pc: [140, 92, 56], pc2: [96, 60, 40], cc: [160, 110, 80],
+      mat: ['Dřevěná zeď', 28, 45, 36], bh: [28, 55, 40], bn: ['Zlodějský býk', 'Šerif Prachovnice'] },
+    { n: 'Vikingové', e: '⚔️', st: ['longhouse', 'pine', 'pine'], far: 'hills', fc: 'rgba(60,80,100,.4)', sun: [0.3, 0.6, 0.05, '235,240,255'],
+      sky: [[30, 50, 80], [90, 120, 150], [200, 210, 215]], ground: [90, 110, 90], road: [80, 85, 85], edge: [150, 155, 150], bld: [90, 90, 90], pc: [112, 78, 48], pc2: [168, 64, 44], cc: [120, 125, 120],
+      mat: ['Zeď z hrubého dřeva', 25, 35, 32], bh: [215, 28, 46], bn: ['Dračí příď', 'Jarl Ledový hrom'] },
+    { n: 'Arabská poušť', e: '🐪', st: ['dome', 'palm', 'dome'], far: 'dunes', fc: 'rgba(120,50,70,.45)', sun: [0.5, 0.78, 0.12, '255,150,90'], stars: true,
+      sky: [[20, 30, 80], [200, 110, 70], [255, 200, 120]], ground: [225, 190, 130], road: [180, 150, 100], edge: [235, 210, 160], bld: [210, 170, 120], pc: [250, 240, 220], pc2: [50, 150, 170], cc: [190, 160, 110],
+      mat: ['Zeď pouštní pevnosti', 36, 40, 58], bh: [270, 55, 46], bn: ['Džin z lampy', 'Sultán písečné bouře'] },
+    { n: 'Sopečný ostrov', e: '🌋', st: ['volcano', 'rock', 'rock'], far: 'hills', fc: 'rgba(60,15,15,.55)', sun: [0.5, 0.6, 0.14, '255,120,40'],
+      sky: [[30, 10, 20], [130, 40, 30], [240, 120, 50]], ground: [60, 40, 40], road: [50, 35, 35], edge: [150, 70, 40], bld: [70, 50, 50], pc: [58, 48, 52], pc2: [255, 110, 30], cc: [70, 55, 55],
+      mat: ['Čedičová zeď', 10, 15, 22], bh: [14, 90, 46], bn: ['Lávový golem', 'Ohnivý titán Vulkán'] },
+    { n: 'Hlubiny oceánu', e: '🐙', st: ['coral', 'kelp', 'coral'], far: 'hills', fc: 'rgba(10,60,100,.4)', sun: [0.5, 0.1, 0.09, '200,255,255'],
+      sky: [[5, 40, 90], [20, 110, 150], [80, 200, 200]], ground: [170, 170, 130], road: [120, 140, 150], edge: [180, 200, 200], bld: [60, 100, 130], pc: [242, 110, 130], pc2: [250, 170, 60], cc: [150, 160, 140],
+      mat: ['Korálová zeď', 345, 55, 60], bh: [300, 45, 46], bn: ['Krakenovo mládě', 'Kraken z hlubin'] },
+    { n: 'Pohádková říše', e: '🍄', st: ['mush', 'crystal', 'mush'], far: 'hills', fc: 'rgba(120,40,140,.35)', sun: null, stars: true,
+      sky: [[70, 30, 120], [190, 90, 190], [255, 200, 230]], ground: [110, 170, 110], road: [190, 140, 200], edge: [240, 200, 245], bld: [180, 120, 190], pc: [225, 80, 150], pc2: [255, 250, 250], cc: [230, 170, 230],
+      mat: ['Cukrová zeď', 320, 60, 70], bh: [310, 60, 56], bn: ['Dortový drak', 'Královna víl'] },
+    { n: 'Vesmír', e: '🚀', st: ['neon', 'crystal', 'neon'], far: 'city', fc: 'rgba(120,60,200,.35)', sun: [0.7, 0.3, 0.06, '200,220,255'], stars: true,
+      sky: [[5, 5, 25], [25, 20, 70], [90, 60, 140]], ground: [40, 40, 70], road: [30, 30, 55], edge: [90, 200, 255], bld: [40, 50, 110], pc: [90, 200, 255], pc2: [255, 90, 200], cc: [90, 90, 140],
+      mat: ['Meteoritová zeď', 250, 25, 35], bh: [275, 70, 52], bn: ['Kosmický strážce', 'Pán temné hmoty'] }
+  ];
+  var TITLES = ['Jehně', 'Brigádnice', 'Bourající ovce', 'Kladivářka', 'Šéfka demolice', 'Paní kladiva', 'Zhoubkyně zdí', 'Legenda sutin', 'Bagr s vlnou', 'Bohyně bourání'];
+
+  /* ---------- Formátování čísel (česká desetinná čárka) ---------- */
+  var SUF = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'];
+  function fmt(n) {
+    if (!isFinite(n)) return '∞';
+    if (n < 0) return '-' + fmt(-n);
+    if (n < 1000) {
+      var t = n >= 100 ? String(Math.floor(n)) : String(+n.toFixed(n < 10 ? 2 : 1));
+      return t.replace('.', ',');
+    }
+    var e = Math.floor(Math.log10(n));
+    if (e < 36) {
+      var i = Math.floor(e / 3);
+      var v = n / Math.pow(10, i * 3);
+      return String(+v.toPrecision(3)).replace('.', ',') + SUF[i];
+    }
+    var m = n / Math.pow(10, e);
+    return m.toFixed(2).replace('.', ',') + 'e' + e;
+  }
+  function roman(n) {
+    if (n > 3999) return String(n);
+    var m = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+    var r = '';
+    for (var i = 0; i < m.length; i++) { while (n >= m[i][0]) { r += m[i][1]; n -= m[i][0]; } }
+    return r;
+  }
+  function titleOf(L) { var t = Math.floor((L - 1) / 10); return t < 10 ? TITLES[t] : TITLES[9] + ' +' + (t - 9); }
+  function wallName(w) { return w.mat.n; }
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function hsl2rgb(h, s, l) {
+    h = ((h % 360) + 360) % 360 / 360; s /= 100; l /= 100;
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+    function f(t) { t = (t + 1) % 1; if (t < 1 / 6) return p + (q - p) * 6 * t; if (t < 0.5) return q; if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6; return p; }
+    return [Math.round(f(h + 1 / 3) * 255), Math.round(f(h) * 255), Math.round(f(h - 1 / 3) * 255)];
+  }
+
+  /* =========================================================
+     Stav hry a ukládání
+     ========================================================= */
+  var KEY = 'ovce-bourac-3d-v1';
+  var S;
+  function freshState() { return { gold: 0, w: 1, xp: 0, L: 1, u: { pow: 0, spd: 0, weak: 0, gold: 0, dog: 0 }, best: 1, wool: 0, pack: 'off', mode: 1, weakHits: 0, unlocked: 1, mp: [], won: false, name: '', shears: 0, maxL: 1, skins: [0], skin: 0, crates: 0, master: false, shm: [] }; }
+  function num(v, d, min) { return (typeof v === 'number' && isFinite(v) && v >= min) ? v : d; }
+  function applySave(o) {
+    var f = freshState();
+    if (!o || typeof o !== 'object') return f;
+    f.gold = num(o.gold, 0, 0);
+    f.w = Math.min(TOP_W, Math.floor(num(o.w, 1, 1)));
+    f.xp = num(o.xp, 0, 0);
+    f.L = Math.floor(num(o.L, 1, 1));
+    f.best = Math.min(TOP_W, Math.max(f.w, Math.floor(num(o.best, f.w, 1))));
+    f.unlocked = Math.min(MAP_N, (typeof o.unlocked === 'number') ? Math.max(1, Math.floor(o.unlocked)) : mapOf(f.best));
+    f.won = !!o.won;
+    if (Array.isArray(o.skins)) { f.skins = []; o.skins.forEach(function (v) { v = Math.floor(v); if (v >= 0 && v < 21 && f.skins.indexOf(v) < 0) f.skins.push(v); }); if (f.skins.indexOf(0) < 0) f.skins.push(0); }
+    f.skin = f.skins.indexOf(Math.floor(num(o.skin, 0, 0))) >= 0 ? Math.floor(o.skin) : 0;
+    f.shm = [];
+    if (Array.isArray(o.shm)) o.shm.forEach(function (v) { v = Math.floor(v); if (v >= 1 && v <= MAP_N && f.shm.indexOf(v) < 0) f.shm.push(v); });
+    else { var oc = Math.min(MAP_N, Math.floor(num(o.shears, 0, 0))); for (var sm = 1; sm <= oc; sm++) f.shm.push(sm); }
+    f.crates = Math.min(99, Math.floor(num(o.crates, 0, 0))); f.master = !!o.master;
+    f.name = (typeof o.name === 'string') ? o.name.slice(0, 14) : '';
+    f.shears = Math.floor(num(o.shears, 0, 0)); f.maxL = Math.max(f.L, Math.floor(num(o.maxL, 1, 1)));
+    if (Array.isArray(o.mp)) for (var mi = 0; mi < MAP_N; mi++) f.mp[mi] = Math.min(PER, Math.floor(num(o.mp[mi], 1, 1)));
+    f.wool = Math.floor(num(o.wool, 0, 0));
+    f.weakHits = Math.floor(num(o.weakHits, 0, 0));
+    if (o.u) UPS.forEach(function (k) { f.u[k] = Math.floor(num(o.u[k], 0, 0)); });
+    f.pack = PACK_IDS.indexOf(o.pack) >= 0 ? o.pack : (o.sound ? 'classic' : 'off');
+    f.mode = (o.mode === 10 || o.mode === 0) ? o.mode : 1;
+    return f;
+  }
+  function serialize() { return { gold: S.gold, w: S.w, xp: S.xp, L: S.L, u: S.u, best: S.best, wool: S.wool, pack: S.pack, mode: S.mode, weakHits: S.weakHits, unlocked: S.unlocked, mp: S.mp, won: S.won, name: S.name, shears: S.shears, maxL: Math.max(S.maxL, S.L), skins: S.skins, skin: S.skin, crates: S.crates, master: S.master, shm: S.shm }; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(serialize())); } catch (e) { /* bez ukládání */ } }
+  function loadLocal() { try { var r = localStorage.getItem(KEY); if (r) return applySave(JSON.parse(r)); } catch (e) { /* prázdné */ } return freshState(); }
+
+  /* ---------- Odvozené hodnoty ---------- */
+  function woolMult() { return 1 + WOOL_STEP * S.wool; }
+  function dmgBase() { return clampBig(UP.pow.eff(S.u.pow) * ECON.levelMult(S.L) * woolMult()); }
+  function weakMult() { return UP.weak.eff(S.u.weak); }
+  function goldMult() { return UP.gold.eff(S.u.gold) * woolMult(); }
+  function dogDps() { return dmgBase() * UP.dog.eff(S.u.dog); }
+  function costOf(k, n) { return UP[k].base * Math.pow(UP[k].grow, n); }
+  function sumCost(k, n, q) { var g = UP[k].grow; return UP[k].base * Math.pow(g, n) * (Math.pow(g, q) - 1) / (g - 1); }
+  function room(k) { return UP[k].cap ? Math.max(0, UP[k].cap - S.u[k]) : 1e6; }
+  function maxQ(k) {
+    var g = UP[k].grow, n = S.u[k], c0 = costOf(k, n), rm = room(k);
+    if (!(S.gold >= c0) || rm < 1) return 0;
+    var q = Math.floor(Math.log(S.gold * (g - 1) / c0 + 1) / Math.log(g));
+    q = Math.max(1, Math.min(q, rm));
+    while (q > 1 && sumCost(k, n, q) > S.gold) q--;
+    return q;
+  }
+  function qty(k) {
+    var rm = room(k);
+    if (rm < 1) return 0;
+    return S.mode === 0 ? Math.max(1, maxQ(k)) : Math.min(S.mode, rm);
+  }
+  function shearGain() { return S.w >= 15 ? Math.floor(Math.pow(S.w / 15, 1.5)) : 0; }
+
+  /* =========================================================
+     Zvuk (jen po klepnutí a jen když je zapnutý)
+     ========================================================= */
+  var AC = null, noiseBuf = null, lastSfx = 0;
+  function audio() {
+    if (S.pack === 'off') return null;
+    try {
+      if (!AC) {
+        var C = window.AudioContext || window.webkitAudioContext;
+        if (!C) return null;
+        AC = new C();
+        noiseBuf = AC.createBuffer(1, AC.sampleRate * 0.6, AC.sampleRate);
+        var d = noiseBuf.getChannelData(0);
+        for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      }
+      if (AC.state === 'suspended') AC.resume();
+      return AC;
+    } catch (e) { return null; }
+  }
+  var PACKS = [['off', 'Vypnuto'], ['classic', 'Stavba'], ['retro', 'Retro 8-bit'], ['cartoon', 'Kreslené'], ['sheep', 'Ovčí sbor']];
+  var PACK_IDS = PACKS.map(function (p) { return p[0]; });
+  function nz(c, dur, freq, q, gain, type, delay) {
+    var src = c.createBufferSource(); src.buffer = noiseBuf;
+    var f = c.createBiquadFilter(); f.type = type || 'bandpass'; f.frequency.value = freq; f.Q.value = q;
+    var g = c.createGain(); var t = c.currentTime + (delay || 0);
+    g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    src.connect(f); f.connect(g); g.connect(c.destination); src.start(t, Math.random() * 0.2, dur + 0.02);
+  }
+  function tn(c, f0, f1, dur, gain, type, delay) {
+    var o = c.createOscillator(); var g = c.createGain(); var t = c.currentTime + (delay || 0);
+    o.type = type || 'sine'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
+  }
+  function bleat(c, f, dur, gain, delay) {
+    var o = c.createOscillator(), lfo = c.createOscillator(), lg = c.createGain(), fl = c.createBiquadFilter(), gn = c.createGain(), t0 = c.currentTime + (delay || 0);
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(f, t0); o.frequency.linearRampToValueAtTime(f * 0.72, t0 + dur);
+    lfo.frequency.value = 26 + Math.random() * 8; lg.gain.value = f * 0.08; lfo.connect(lg); lg.connect(o.frequency);
+    fl.type = 'bandpass'; fl.frequency.value = 800 + f; fl.Q.value = 2.2;
+    gn.gain.setValueAtTime(0.0001, t0); gn.gain.exponentialRampToValueAtTime(gain, t0 + Math.min(0.05, dur / 3)); gn.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    o.connect(fl); fl.connect(gn); gn.connect(c.destination);
+    o.start(t0); lfo.start(t0); o.stop(t0 + dur + 0.05); lfo.stop(t0 + dur + 0.05);
+  }
+  function seq(c, notes, dur, gain, type, step) { notes.forEach(function (f, i) { tn(c, f, f, dur, gain, type, i * step); }); }
+  var SND = {
+    classic: {
+      hit: function (c) { nz(c, 0.09, 1100, 0.8, 0.16); tn(c, 150, 55, 0.1, 0.22); },
+      weak: function (c) { nz(c, 0.14, 2200, 0.9, 0.2); tn(c, 220, 60, 0.14, 0.26); tn(c, 880, 1320, 0.1, 0.08, 'triangle'); },
+      miss: function (c) { nz(c, 0.07, 700, 0.6, 0.07, 'lowpass'); },
+      armor: function (c) { nz(c, 0.1, 3200, 3, 0.14, 'highpass'); tn(c, 900, 480, 0.08, 0.1, 'square'); },
+      break: function (c) { nz(c, 0.5, 420, 0.6, 0.34, 'lowpass'); tn(c, 110, 38, 0.4, 0.3); },
+      boss: function (c) { nz(c, 0.9, 320, 0.5, 0.4, 'lowpass'); tn(c, 90, 30, 0.7, 0.36); },
+      level: function (c) { seq(c, [523, 659, 784, 1047], 0.14, 0.12, 'triangle', 0.07); },
+      baa: function (c) { bleat(c, 340, 0.55, 0.18); },
+      buy: function (c) { tn(c, 600, 900, 0.09, 0.12, 'triangle'); tn(c, 900, 1200, 0.1, 0.1, 'triangle', 0.07); },
+      boom: function (c) { nz(c, 0.7, 260, 0.4, 0.45, 'lowpass'); tn(c, 80, 28, 0.6, 0.4); },
+      stun: function (c) { tn(c, 700, 300, 0.25, 0.15, 'triangle'); tn(c, 1000, 500, 0.25, 0.1, 'triangle', 0.08); },
+      slam: function (c) { nz(c, 0.5, 200, 0.5, 0.45, 'lowpass'); tn(c, 70, 25, 0.5, 0.4); },
+      gold: function (c) { seq(c, [880, 1175, 1568, 2093], 0.1, 0.1, 'triangle', 0.05); },
+      warn: function (c) { tn(c, 330, 330, 0.12, 0.12, 'square'); tn(c, 330, 330, 0.12, 0.12, 'square', 0.2); },
+      roar: function (c) { nz(c, 0.8, 160, 0.6, 0.3, 'lowpass'); tn(c, 90, 60, 0.8, 0.25, 'sawtooth'); }
+    },
+    retro: {
+      hit: function (c) { tn(c, 260, 120, 0.06, 0.09, 'square'); },
+      weak: function (c) { tn(c, 520, 1040, 0.09, 0.09, 'square'); tn(c, 780, 1560, 0.09, 0.07, 'square', 0.07); },
+      miss: function (c) { tn(c, 120, 90, 0.05, 0.05, 'square'); },
+      armor: function (c) { tn(c, 200, 200, 0.05, 0.08, 'square'); tn(c, 150, 150, 0.05, 0.08, 'square', 0.05); },
+      break: function (c) { nz(c, 0.3, 1800, 0.5, 0.18, 'highpass'); tn(c, 300, 60, 0.3, 0.12, 'square'); },
+      boss: function (c) { seq(c, [262, 330, 392, 523, 659, 784, 1047], 0.1, 0.1, 'square', 0.07); },
+      level: function (c) { seq(c, [523, 659, 784, 1047], 0.1, 0.09, 'square', 0.08); },
+      baa: function (c) { for (var i = 0; i < 7; i++) tn(c, i % 2 ? 330 : 290, i % 2 ? 330 : 290, 0.05, 0.08, 'square', i * 0.05); },
+      buy: function (c) { tn(c, 660, 660, 0.05, 0.08, 'square'); tn(c, 990, 990, 0.08, 0.08, 'square', 0.06); },
+      boom: function (c) { nz(c, 0.5, 500, 0.3, 0.3, 'lowpass'); tn(c, 120, 30, 0.45, 0.2, 'square'); },
+      stun: function (c) { seq(c, [880, 740, 622, 523, 440], 0.07, 0.08, 'square', 0.06); },
+      slam: function (c) { nz(c, 0.4, 300, 0.4, 0.3, 'lowpass'); tn(c, 100, 40, 0.4, 0.25, 'square'); },
+      gold: function (c) { tn(c, 988, 988, 0.07, 0.1, 'square'); tn(c, 1319, 1319, 0.22, 0.1, 'square', 0.07); },
+      warn: function (c) { seq(c, [440, 440, 440], 0.08, 0.09, 'square', 0.14); },
+      roar: function (c) { tn(c, 110, 55, 0.7, 0.16, 'sawtooth'); }
+    },
+    cartoon: {
+      hit: function (c) { tn(c, 420, 160, 0.12, 0.18, 'sine'); tn(c, 240, 300, 0.1, 0.08, 'triangle', 0.06); },
+      weak: function (c) { tn(c, 400, 1800, 0.25, 0.15, 'sine'); nz(c, 0.05, 2500, 1, 0.1, 'highpass'); },
+      miss: function (c) { nz(c, 0.15, 900, 0.5, 0.08, 'bandpass'); },
+      armor: function (c) { tn(c, 300, 220, 0.1, 0.2, 'triangle'); nz(c, 0.05, 2500, 2, 0.1, 'highpass'); },
+      break: function (c) { tn(c, 200, 900, 0.08, 0.2, 'sine'); tn(c, 500, 100, 0.3, 0.2, 'sine', 0.08); nz(c, 0.2, 1200, 0.5, 0.15); },
+      boss: function (c) { tn(c, 1500, 200, 0.6, 0.15, 'sine'); tn(c, 300, 120, 0.3, 0.2, 'triangle', 0.6); tn(c, 400, 160, 0.3, 0.2, 'triangle', 0.9); },
+      level: function (c) { tn(c, 400, 800, 0.12, 0.12, 'sine'); tn(c, 600, 1200, 0.12, 0.12, 'sine', 0.1); tn(c, 800, 1600, 0.2, 0.12, 'sine', 0.2); },
+      baa: function (c) { bleat(c, 320, 0.5, 0.15); },
+      buy: function (c) { tn(c, 500, 1000, 0.1, 0.12, 'sine'); },
+      boom: function (c) { nz(c, 0.4, 600, 0.4, 0.3, 'lowpass'); tn(c, 200, 40, 0.4, 0.25, 'sine'); },
+      stun: function (c) { for (var i = 0; i < 6; i++) tn(c, i % 2 ? 800 : 600, i % 2 ? 800 : 600, 0.07, 0.1, 'sine', i * 0.07); },
+      slam: function (c) { tn(c, 150, 40, 0.35, 0.3, 'sine'); nz(c, 0.3, 300, 0.5, 0.3, 'lowpass'); },
+      gold: function (c) { seq(c, [700, 900, 1100, 1500], 0.09, 0.1, 'sine', 0.06); },
+      warn: function (c) { tn(c, 500, 500, 0.1, 0.12, 'sine'); tn(c, 500, 500, 0.1, 0.12, 'sine', 0.18); },
+      roar: function (c) { tn(c, 200, 80, 0.6, 0.2, 'triangle'); }
+    },
+    sheep: {
+      hit: function (c) { bleat(c, 300 + Math.random() * 120, 0.16, 0.1); },
+      weak: function (c) { bleat(c, 520 + Math.random() * 120, 0.22, 0.13); nz(c, 0.05, 2400, 1, 0.08, 'highpass'); },
+      miss: function (c) { bleat(c, 260, 0.08, 0.04); },
+      armor: function (c) { bleat(c, 200, 0.1, 0.08); tn(c, 700, 400, 0.06, 0.08, 'square'); },
+      break: function (c) { bleat(c, 330, 0.45, 0.16); bleat(c, 280, 0.5, 0.12, 0.12); },
+      boss: function (c) { [0, 0.15, 0.3, 0.45].forEach(function (d, i) { bleat(c, 260 + i * 70, 0.5, 0.12, d); }); },
+      level: function (c) { bleat(c, 300, 0.4, 0.1); bleat(c, 380, 0.4, 0.1, 0.05); bleat(c, 450, 0.4, 0.1, 0.1); },
+      baa: function (c) { bleat(c, 340, 0.55, 0.18); },
+      buy: function (c) { bleat(c, 500, 0.1, 0.08); },
+      boom: function (c) { bleat(c, 150, 0.6, 0.2); nz(c, 0.5, 260, 0.4, 0.3, 'lowpass'); },
+      stun: function (c) { bleat(c, 700, 0.3, 0.1); bleat(c, 600, 0.3, 0.1, 0.15); },
+      slam: function (c) { bleat(c, 120, 0.5, 0.2); nz(c, 0.4, 200, 0.5, 0.35, 'lowpass'); },
+      gold: function (c) { bleat(c, 800, 0.2, 0.1); bleat(c, 1000, 0.25, 0.1, 0.1); },
+      warn: function (c) { bleat(c, 450, 0.15, 0.1); bleat(c, 450, 0.15, 0.1, 0.22); },
+      roar: function (c) { bleat(c, 100, 0.9, 0.22); }
+    }
+  };
+  function sfx(kind) {
+    var c = audio(); if (!c) return;
+    var now = performance.now();
+    if (kind === 'hit' && now - lastSfx < 45) return;
+    lastSfx = now;
+    try { var f = (SND[S.pack] && SND[S.pack][kind]) || SND.classic[kind]; if (f) f(c); } catch (e) { /* ticho */ }
+  }
+
+  /* =========================================================
+     Malé 3D vykreslování na plátně (perspektivní kamera, kvádry, koule,
+     řazení od nejvzdálenějších). Bez knihoven a bez WebGL.
+     ========================================================= */
+  var stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
+  var W = 300, H = 300, DPR = 1;
+  var FOV = 0.9;
+  var cam = { x: 0.6, y: 3.0, z: 6.6, tx: 0, ty: 1.3, tz: 0, f: 300, rx: 1, ry: 0, rz: 0, ux: 0, uy: 1, uz: 0, fx: 0, fy: 0, fz: -1, tanV: 0.5, tanH: 0.5 };
+  var LD = (function () { var x = -0.4, y = 0.8, z = 0.5, l = Math.sqrt(x * x + y * y + z * z); return [x / l, y / l, z / l]; })();
+  var INK = [28, 26, 23], WOOL = [246, 243, 236], HIDE = [58, 50, 44], HELM = [242, 183, 5], HELM0 = [242, 183, 5], WOOD = [122, 75, 42], METAL = [139, 151, 161];
+  var FOG = [240, 163, 90];
+  var AX = [1, 0, 0], AY = [0, 1, 0], AZ = [0, 0, 1];
+  var shakeX = 0, shakeY = 0;
+
+  function camUpdate() {
+    var fx = cam.tx - cam.x, fy = cam.ty - cam.y, fz = cam.tz - cam.z;
+    var l = Math.sqrt(fx * fx + fy * fy + fz * fz); fx /= l; fy /= l; fz /= l;
+    var rx = -fz, rz = fx, rl = Math.sqrt(rx * rx + rz * rz); rx /= rl; rz /= rl;
+    var ux = ((0) * fz - rz * fy) * -1, uy, uz;
+    // up = right × forward
+    ux = (0 * fz) - (rz * fy); uy = (rz * fx) - (rx * fz); uz = (rx * fy) - (0 * fx);
+    cam.fx = fx; cam.fy = fy; cam.fz = fz; cam.rx = rx; cam.ry = 0; cam.rz = rz; cam.ux = ux; cam.uy = uy; cam.uz = uz;
+    cam.f = (H / 2) / Math.tan(FOV / 2);
+    cam.tanV = Math.tan(FOV / 2); cam.tanH = cam.tanV * (W / H);
+  }
+  var pr = { x: 0, y: 0, z: 0 };
+  function proj(x, y, z) {
+    var dx = x - cam.x, dy = y - cam.y, dz = z - cam.z;
+    var pz = dx * cam.fx + dy * cam.fy + dz * cam.fz;
+    pr.z = pz;
+    if (pz < 0.15) { pr.x = 0; pr.y = 0; return false; }
+    var px = dx * cam.rx + dy * cam.ry + dz * cam.rz, py = dx * cam.ux + dy * cam.uy + dz * cam.uz;
+    pr.x = W / 2 + px / pz * cam.f; pr.y = H / 2 - py / pz * cam.f;
+    return true;
+  }
+  function dist2cam(x, y, z) { var dx = x - cam.x, dy = y - cam.y, dz = z - cam.z; return Math.sqrt(dx * dx + dy * dy + dz * dz); }
+  function fogMix(rgb, d) {
+    var t = Math.max(0, Math.min(1, (d - 16) / 70)) * 0.8;
+    return [rgb[0] + (FOG[0] - rgb[0]) * t, rgb[1] + (FOG[1] - rgb[1]) * t, rgb[2] + (FOG[2] - rgb[2]) * t];
+  }
+  function css(c, k, lift) {
+    var r = c[0] * k, g = c[1] * k, b = c[2] * k;
+    if (lift) { r += (255 - r) * lift; g += (255 - g) * lift; b += (255 - b) * lift; }
+    return 'rgb(' + (r < 0 ? 0 : r > 255 ? 255 : r | 0) + ',' + (g < 0 ? 0 : g > 255 ? 255 : g | 0) + ',' + (b < 0 ? 0 : b > 255 ? 255 : b | 0) + ')';
+  }
+
+  var items = [];
+  function dot3(a, b0, b1, b2) { return a[0] * b0 + a[1] * b1 + a[2] * b2; }
+
+  // Kvádr s libovolnou orientací: osy ax, ay, az (jednotkové), poloviční rozměry hx, hy, hz.
+  function addBox(cx, cy, cz, hx, hy, hz, ax, ay, az, rgb, o) {
+    o = o || {};
+    var dBox = dist2cam(cx, cy, cz);
+    var lift = o.lift || 0, ol = o.outline === undefined ? 0.4 : o.outline;
+    var ax3 = [ax, ay, az], hs = [hx, hy, hz], s, sgn, i;
+    for (i = 0; i < 3; i++) {
+      for (s = 0; s < 2; s++) {
+        sgn = s ? -1 : 1;
+        var n = ax3[i], nx = n[0] * sgn, ny = n[1] * sgn, nz = n[2] * sgn, h = hs[i];
+        var fcx = cx + nx * h, fcy = cy + ny * h, fcz = cz + nz * h;
+        if (nx * (cam.x - fcx) + ny * (cam.y - fcy) + nz * (cam.z - fcz) <= 0) continue;
+        var u = ax3[(i + 1) % 3], v = ax3[(i + 2) % 3], hu = hs[(i + 1) % 3], hv = hs[(i + 2) % 3];
+        var pts = [], ok = true, k, su, sv;
+        for (k = 0; k < 4; k++) {
+          su = (k === 0 || k === 3) ? 1 : -1; sv = k < 2 ? 1 : -1;
+          if (!proj(fcx + u[0] * hu * su + v[0] * hv * sv, fcy + u[1] * hu * su + v[1] * hv * sv, fcz + u[2] * hu * su + v[2] * hv * sv)) { ok = false; break; }
+          pts.push(pr.x, pr.y);
+        }
+        if (!ok) continue;
+        var shade = 0.5 + 0.62 * Math.max(0, dot3(LD, nx, ny, nz));
+        var base = fogMix(rgb, dBox);
+        items.push({ d: dBox, t: 'q', p: pts, fill: css(base, shade, lift), line: ol ? 'rgba(0,0,0,' + ol + ')' : null, wins: o.wins && (o.winFace === i * 2 + s) ? o.wins : null, fcx: fcx, fcy: fcy, fcz: fcz, u: u, v: v, hu: hu, hv: hv });
+      }
+    }
+  }
+  function addSphere(x, y, z, r, rgb, o) {
+    if (!proj(x, y, z)) return;
+    o = o || {};
+    var d = dist2cam(x, y, z), rp = r * cam.f / pr.z;
+    items.push({ d: d + (o.bias || 0), t: 's', x: pr.x, y: pr.y, rx: rp * (o.sx || 1), ry: rp * (o.sy || 1), rot: o.rot || 0, col: fogMix(rgb, d), outline: o.outline === undefined ? true : o.outline, lift: o.lift || 0 });
+  }
+  function addShadow(x, z, r, a) {
+    if (!proj(x, 0.01, z)) return;
+    var rp = r * cam.f / pr.z;
+    items.push({ d: 1e6, t: 'h', x: pr.x, y: pr.y, rx: rp, ry: rp * 0.38, a: a });
+  }
+  function addDot(x, y, z, size, col, alpha, d0) {
+    if (!proj(x, y, z)) return;
+    var sp = Math.max(1.5, size * cam.f / pr.z);
+    items.push({ d: dist2cam(x, y, z) + (d0 || 0), t: 'p', x: pr.x, y: pr.y, s: sp, col: col, a: alpha });
+  }
+  function rotAxes(rx, ry, rz) {
+    var cx = Math.cos(rx), sx = Math.sin(rx), cy = Math.cos(ry), sy = Math.sin(ry), cz = Math.cos(rz), sz = Math.sin(rz);
+    return [[cz * cy, sz * cy, -sy], [cz * sy * sx - sz * cx, sz * sy * sx + cz * cx, cy * sx], [cz * sy * cx + sz * sx, sz * sy * cx - cz * sx, cy * cx]];
+  }
+  function cross3(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+  // Končetina: visí z kloubu ve směru dir (v rovině y-z).
+  function addLimb(hx, hy, hz, dir, len, half, rgb, o) {
+    var ay = dir, ax = [1, 0, 0], az = cross3(ax, ay);
+    addBox(hx + dir[0] * len / 2, hy + dir[1] * len / 2, hz + dir[2] * len / 2, half, len / 2, half, ax, ay, az, rgb, o);
+  }
+
+  function drawItem(it) {
+    var p = it.p, i;
+    if (it.t === 'q') {
+      ctx.fillStyle = it.fill;
+      ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(p[2], p[3]); ctx.lineTo(p[4], p[5]); ctx.lineTo(p[6], p[7]); ctx.closePath(); ctx.fill();
+      if (it.line) { ctx.strokeStyle = it.line; ctx.lineWidth = 1; ctx.stroke(); }
+      if (it.wins) {
+        for (i = 0; i < it.wins.length; i++) {
+          var w = it.wins[i], a = w[0], b = w[1];
+          var c0 = [it.fcx + it.u[0] * a * it.hu + it.v[0] * b * it.hv, it.fcy + it.u[1] * a * it.hu + it.v[1] * b * it.hv, it.fcz + it.u[2] * a * it.hu + it.v[2] * b * it.hv];
+          if (!proj(c0[0], c0[1], c0[2])) continue;
+          var ww = 0.5 * cam.f / pr.z;
+          ctx.fillStyle = 'rgba(255,218,140,.78)'; ctx.fillRect(pr.x - ww * 0.5, pr.y - ww * 0.65, ww, ww * 1.3);
+        }
+      }
+    } else if (it.t === 's') {
+      var rx = Math.max(0.5, it.rx), ry = Math.max(0.5, it.ry);
+      var g = ctx.createRadialGradient(it.x - rx * 0.32, it.y - ry * 0.38, Math.min(rx, ry) * 0.08, it.x, it.y, Math.max(rx, ry) * 1.05);
+      g.addColorStop(0, css(it.col, 1.2, it.lift)); g.addColorStop(0.55, css(it.col, 0.92, it.lift)); g.addColorStop(1, css(it.col, 0.58, it.lift));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(it.x, it.y, rx, ry, it.rot, 0, 6.2832); ctx.fill();
+      if (it.outline) { ctx.strokeStyle = 'rgba(28,26,23,.75)'; ctx.lineWidth = Math.max(1, Math.min(rx, ry) * 0.09); ctx.stroke(); }
+    } else if (it.t === 'h') {
+      ctx.fillStyle = 'rgba(0,0,0,' + it.a + ')'; ctx.beginPath(); ctx.ellipse(it.x, it.y, it.rx, it.ry, 0, 0, 6.2832); ctx.fill();
+    } else if (it.t === 'p') {
+      ctx.globalAlpha = it.a; ctx.fillStyle = it.col; ctx.fillRect(it.x - it.s / 2, it.y - it.s / 2, it.s, it.s); ctx.globalAlpha = 1;
+    } else if (it.t === 'c') {
+      ctx.globalAlpha = it.a; ctx.fillStyle = it.col; ctx.beginPath(); ctx.arc(it.x, it.y, it.r, 0, 6.2832); ctx.fill(); ctx.globalAlpha = 1;
+    } else if (it.t === 'r') {
+      ctx.globalAlpha = it.a; ctx.strokeStyle = it.col; ctx.lineWidth = it.lw; ctx.beginPath(); ctx.arc(it.x, it.y, it.r, 0, 6.2832); ctx.stroke(); ctx.globalAlpha = 1;
+    } else if (it.t === 'f') {
+      var fg = ctx.createRadialGradient(it.x, it.y, 0, it.x, it.y, it.r), fa = 1 - it.k * it.k;
+      fg.addColorStop(0, 'rgba(255,250,225,' + fa + ')'); fg.addColorStop(0.35, 'rgba(255,200,70,' + fa * 0.95 + ')'); fg.addColorStop(0.7, 'rgba(235,90,30,' + fa * 0.7 + ')'); fg.addColorStop(1, 'rgba(120,30,20,0)');
+      ctx.fillStyle = fg; ctx.fillRect(it.x - it.r, it.y - it.r, it.r * 2, it.r * 2);
+    } else if (it.t === 'weak') {
+      drawWeak(it);
+    }
+  }
+  function drawWeak(it) {
+    var pulse = 0.5 + 0.5 * Math.sin(G.time * 9), r = it.r * (1 + 0.1 * pulse);
+    var g = ctx.createRadialGradient(it.x, it.y, 0, it.x, it.y, r * 1.9);
+    if (it.red) { g.addColorStop(0, 'rgba(255,50,40,' + (0.6 + 0.3 * pulse) + ')'); g.addColorStop(1, 'rgba(255,20,20,0)'); }
+    else { g.addColorStop(0, 'rgba(255,170,40,' + (0.55 + 0.25 * pulse) + ')'); g.addColorStop(1, 'rgba(255,90,20,0)'); }
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(it.x, it.y, r * 1.9, 0, 6.2832); ctx.fill();
+    ctx.lineWidth = Math.max(2, r * 0.2);
+    ctx.strokeStyle = 'rgba(28,26,23,.9)'; ctx.beginPath(); ctx.arc(it.x, it.y, r, 0, 6.2832); ctx.stroke();
+    ctx.lineWidth = Math.max(1.5, r * 0.12); ctx.strokeStyle = it.red ? (pulse > 0.5 ? '#ffd0c8' : '#ff3a2a') : (pulse > 0.5 ? '#fff4c2' : '#ffb02e');
+    ctx.beginPath(); ctx.arc(it.x, it.y, r, 0, 6.2832); ctx.stroke();
+    ctx.strokeStyle = it.red ? '#ff3a2a' : '#ffb02e'; ctx.beginPath();
+    ctx.moveTo(it.x - r * 1.5, it.y); ctx.lineTo(it.x - r * 0.55, it.y); ctx.moveTo(it.x + r * 0.55, it.y); ctx.lineTo(it.x + r * 1.5, it.y);
+    ctx.moveTo(it.x, it.y - r * 1.5); ctx.lineTo(it.x, it.y - r * 0.55); ctx.moveTo(it.x, it.y + r * 0.55); ctx.lineTo(it.x, it.y + r * 1.5);
+    ctx.stroke();
+    ctx.fillStyle = '#ffe27a'; ctx.beginPath(); ctx.arc(it.x, it.y, r * 0.2, 0, 6.2832); ctx.fill();
+  }
+
+  /* =========================================================
+     Svět: země, silnice, budovy, zeď, ovce, pes
+     ========================================================= */
+  var G = { phase: 'walk', pauseT: 0, time: 0, dist: 0, shake: 0, sessionHits: 0, world: 0, cd: 0, cdMax: 0.5, buf: null, swing: null,
+            combo: 0, lastHit: -9, lastSwing: -9, lastDmg: -9, hurt: 0, bonusT: 14, lastLayout: '', weak: null, weakAge: 0, dogT: 0, dogX: 0, dogBite: 0, walkT: 0 };
+  var hero = { x: -1.5, tx: -1.5, z: 2.1, ph: 0, jump: 0, jumpV: 0, headYaw: 1.9 };
+  var wall = null;
+  var debris = [], sparks = [], dusts = [], rings = [], texts = [], bonus = null;
+  var fires = [], flashW = 0, tsT = 0, DYING_T = 2.0;
+  var props = [], skyline = null, horizonY = 100;
+  var wallFrontOf = function () { return wall.z + 0.25; };
+
+  function worldPal() { return MAPS[Math.max(0, Math.min(MAP_N - 1, G.world))]; }
+  function makeProp(st, r, side, z, M) {
+    var o = { k: st, side: side, z: z, s: 0.8 + r() * 0.7, col: M.pc, col2: M.pc2, rot: r() * 3, dp: 1, x: 0 }, ax = 4.6 + r() * 5.2;
+    switch (st) {
+      case 'city': case 'neon':
+        var w = 2.4 + r() * 3, dp = 3 + r() * 3, h = 3 + r() * 9, bl = 1.15 + r() * 0.5, wins = [], wy, wx;
+        for (wy = -h / 2 + 1.2; wy < h / 2 - 0.8; wy += 1.5) for (wx = -dp / 2 + 0.7; wx < dp / 2 - 0.5; wx += 1.2) if (r() < 0.33) wins.push([wy / (h / 2), wx / (dp / 2)]);
+        o.k = 'b'; o.hx = w / 2; o.hy = h / 2; o.hz = dp / 2; o.dp = dp / 2; o.col = [M.bld[0] * bl, M.bld[1] * bl, M.bld[2] * bl]; o.wins = wins.slice(0, 9); o.neon = st === 'neon'; ax = 6.2 + r() * 5; break;
+      case 'pagoda': o.s = 1 + r() * 0.5; o.n = 2 + ((r() * 2) | 0); o.dp = 1.8 * o.s; ax = 7 + r() * 4; break;
+      case 'sakura': o.dp = 1.1 * o.s; ax = 4.8 + r() * 5; break;
+      case 'palm': o.dp = 1.1 * o.s; break;
+      case 'pine': o.dp = 1.0 * o.s; o.s = 0.9 + r() * 0.9; break;
+      case 'jungle': o.s = 0.9 + r() * 0.8; o.dp = 1.4 * o.s; break;
+      case 'acacia': o.dp = 1.6 * o.s; ax = 5 + r() * 6; break;
+      case 'pyramid': o.s = 1.1 + r() * 1.1; o.dp = 2.3 * o.s; ax = 9 + r() * 6; break;
+      case 'cactus': o.dp = 0.8 * o.s; ax = 4.5 + r() * 4.5; break;
+      case 'mesa': o.s = 1.1 + r() * 0.7; o.dp = 1.7 * o.s; ax = 9 + r() * 5; break;
+      case 'hut': o.w = 1; o.d = 1; o.dp = 1.1 * o.s; ax = 6 + r() * 4; break;
+      case 'longhouse': o.k = 'hut'; o.w = 1.8; o.d = 1.1; o.dp = 1.2 * o.s; ax = 6.2 + r() * 4; break;
+      case 'dome': o.dp = 1.3 * o.s; ax = 7 + r() * 4; break;
+      case 'temple': o.dp = 1.4 * o.s; ax = 7 + r() * 4; break;
+      case 'ice': o.s = 1 + r() * 0.8; o.dp = 0.9 * o.s; ax = 5 + r() * 6; break;
+      case 'rock': o.col = M.cc; o.dp = 1.0 * o.s; break;
+      case 'volcano': o.s = 0.8 + r() * 0.6; o.dp = 2.2 * o.s; ax = 9 + r() * 5; break;
+      case 'coral': o.dp = 0.9 * o.s; break;
+      case 'kelp': o.dp = 0.4; break;
+      case 'mush': o.s = 0.9 + r() * 1.0; o.dp = 1.2 * o.s; ax = 5 + r() * 5; break;
+      case 'crystal': o.s = 1 + r() * 1.0; o.dp = 0.9 * o.s; break;
+      case 'bamboo': o.dp = 0.5; break;
+    }
+    o.x = side * ax;
+    return o;
+  }
+  function genProps() {
+    var r = mulberry32(G.world * 131 + 7), M = worldPal(), i, z, side, p;
+    props = [];
+    for (side = -1; side <= 1; side += 2) {
+      z = 6;
+      while (z > -90) {
+        p = makeProp(M.st[(r() * M.st.length) | 0], r, side, z, M);
+        props.push(p); z -= p.dp * 2 + 0.5 + r() * 2.2;
+      }
+      if (M.lamp) for (z = 4; z > -90; z -= 11) props.push({ k: 'l', x: side * 3.9, z: z + r() * 2, side: side, dp: 0.5 });
+      for (i = 0; i < 6; i++) props.push({ k: 'c', x: side * (4.5 + r() * 1.2), z: 4 - r() * 90, hx: 0.3 + r() * 0.3, col: [M.cc[0] + r() * 40, M.cc[1] + r() * 20, M.cc[2]], rot: r() * 3, dp: 0.5 });
+    }
+  }
+  var STARS = (function () { var r = mulberry32(5), a = []; for (var i = 0; i < 70; i++) a.push([r(), r() * 0.9, 0.35 + r() * 0.65, r() < 0.2 ? 2.2 : 1.4]); return a; })();
+  function drawProp(p) {
+    var s = p.s, x = p.x, z = p.z, i, a, OL = { outline: 0.28 }, M = worldPal();
+    function bx(dx, y, dz, hx, hy, hz, c, o) { addBox(x + dx, y, z + dz, hx, hy, hz, AX, AY, AZ, c, o || OL); }
+    function bxr(dx, y, dz, hx, hy, hz, ry, rz, c, o) { var q = rotAxes(0, ry, rz); addBox(x + dx, y, z + dz, hx, hy, hz, q[0], q[1], q[2], c, o || OL); }
+    function sp(dx, y, dz, r, c, o) { addSphere(x + dx, y, z + dz, r, c, o); }
+    var BR = [112, 78, 48], GR = [46, 120, 66], GR2 = [60, 140, 76], GOLD = [255, 206, 70];
+    switch (p.k) {
+      case 'pagoda':
+        for (i = 0; i < p.n; i++) { var pw = (1.5 - i * 0.28) * s; bx(0, 0.7 * s + i * 1.55 * s, 0, pw * 0.8, 0.7 * s, pw * 0.8, p.col); bx(0, 1.5 * s + i * 1.55 * s, 0, pw * 1.2, 0.1 * s, pw * 1.2, p.col2); }
+        bx(0, p.n * 1.55 * s + 0.4 * s, 0, 0.05 * s, 0.6 * s, 0.05 * s, p.col2); break;
+      case 'sakura':
+        bx(0, 0.9 * s, 0, 0.12 * s, 0.9 * s, 0.12 * s, [90, 60, 45]);
+        sp(0, 2.1 * s, 0, 1.0 * s, [250, 170, 195], { lift: 0.1 }); sp(0.6 * s, 1.85 * s, 0.2 * s, 0.7 * s, [246, 150, 182], { lift: 0.1 }); sp(-0.6 * s, 1.8 * s, -0.1 * s, 0.7 * s, [252, 190, 210], { lift: 0.1 }); break;
+      case 'palm':
+        bxr(0.2 * s, 1.6 * s, 0, 0.12 * s, 1.6 * s, 0.12 * s, 0, -0.08, [140, 100, 60]);
+        for (i = 0; i < 6; i++) { a = i * 1.047 + p.rot; bxr(0.4 * s + Math.cos(a) * 0.7 * s, 3.2 * s, Math.sin(a) * 0.7 * s, 0.72 * s, 0.04 * s, 0.17 * s, -a, 0, i % 2 ? GR : GR2, { outline: 0.2 }); }
+        sp(0.4 * s, 3.05 * s, 0.1 * s, 0.12 * s, [110, 76, 40], { outline: false }); sp(0.55 * s, 3.0 * s, -0.1 * s, 0.12 * s, [110, 76, 40], { outline: false }); break;
+      case 'pine':
+        bx(0, 0.5 * s, 0, 0.14 * s, 0.5 * s, 0.14 * s, BR);
+        sp(0, 1.5 * s, 0, 1.0 * s, [28, 92, 64]); sp(0, 2.4 * s, 0, 0.78 * s, [34, 104, 70]); sp(0, 3.2 * s, 0, 0.5 * s, [42, 118, 78]);
+        if (M.n === 'Alpy' || M.n === 'Vikingové') sp(0, 3.55 * s, 0, 0.2 * s, [240, 246, 250], { outline: false }); break;
+      case 'jungle':
+        bx(0, 2.2 * s, 0, 0.2 * s, 2.2 * s, 0.2 * s, [92, 64, 42]);
+        sp(0, 4.8 * s, 0, 1.4 * s, p.col); sp(1.0 * s, 4.2 * s, 0.3 * s, 1.0 * s, p.col2); sp(-1.0 * s, 4.1 * s, -0.2 * s, 1.1 * s, p.col);
+        bx(0.5 * s, 3.3 * s, 0.5 * s, 0.03 * s, 1.0 * s, 0.03 * s, p.col2, { outline: 0 }); bx(-0.6 * s, 3.4 * s, 0.4 * s, 0.03 * s, 0.9 * s, 0.03 * s, p.col2, { outline: 0 }); break;
+      case 'acacia':
+        bx(0, 1.1 * s, 0, 0.15 * s, 1.1 * s, 0.15 * s, BR);
+        bx(0, 2.4 * s, 0, 1.7 * s, 0.22 * s, 1.2 * s, [104, 132, 56]); bx(0.4 * s, 2.7 * s, 0, 1.0 * s, 0.18 * s, 0.8 * s, [124, 150, 66]); break;
+      case 'pyramid':
+        for (i = 0; i < 5; i++) { var q = (2.3 - 0.46 * i) * s, sh = 1 + i * 0.05; bx(0, 0.45 * s + i * 0.9 * s, 0, q, 0.45 * s, q, [Math.min(255, p.col[0] * sh), Math.min(255, p.col[1] * sh), Math.min(255, p.col[2] * sh)]); }
+        break;
+      case 'cactus':
+        bx(0, 1.2 * s, 0, 0.25 * s, 1.2 * s, 0.25 * s, GR); bx(0.45 * s, 1.3 * s, 0, 0.25 * s, 0.12 * s, 0.12 * s, GR); bx(0.65 * s, 1.7 * s, 0, 0.12 * s, 0.4 * s, 0.12 * s, GR);
+        bx(-0.45 * s, 0.95 * s, 0, 0.25 * s, 0.12 * s, 0.12 * s, GR); bx(-0.65 * s, 1.3 * s, 0, 0.12 * s, 0.35 * s, 0.12 * s, GR); break;
+      case 'mesa':
+        bx(0, 0.9 * s, 0, 2.2 * s, 0.9 * s, 1.7 * s, p.col); bx(0, 2.3 * s, 0, 1.9 * s, 0.5 * s, 1.5 * s, p.col2); bx(0, 3.2 * s, 0, 1.6 * s, 0.4 * s, 1.3 * s, p.col); break;
+      case 'hut':
+        bx(0, 0.9 * s, 0, p.w * s, 0.9 * s, p.d * s, p.col);
+        bxr(-p.w * 0.55 * s, 2.05 * s, 0, p.w * 0.78 * s, 0.08 * s, (p.d + 0.15) * s, 0, 0.55, p.col2); bxr(p.w * 0.55 * s, 2.05 * s, 0, p.w * 0.78 * s, 0.08 * s, (p.d + 0.15) * s, 0, -0.55, p.col2);
+        bx(0, 0.7 * s, p.d * s + 0.02, 0.22 * s, 0.5 * s, 0.03 * s, [40, 30, 26], { outline: 0 }); break;
+      case 'dome':
+        bx(0, 1.3 * s, 0, 1.0 * s, 1.3 * s, 1.0 * s, p.col); sp(0, 2.8 * s, 0, 1.1 * s, p.col2); bx(0, 4.1 * s, 0, 0.04 * s, 0.35 * s, 0.04 * s, GOLD, { outline: 0 });
+        bx(-1.3 * s, 2.2 * s, 0.9 * s, 0.18 * s, 2.2 * s, 0.18 * s, p.col); sp(-1.3 * s, 4.6 * s, 0.9 * s, 0.22 * s, p.col2);
+        bx(1.3 * s, 2.2 * s, -0.9 * s, 0.18 * s, 2.2 * s, 0.18 * s, p.col); sp(1.3 * s, 4.6 * s, -0.9 * s, 0.22 * s, p.col2); break;
+      case 'temple':
+        bx(0, 0.15 * s, 0, 1.7 * s, 0.15 * s, 1.2 * s, p.col);
+        for (i = 0; i < 5; i++) bx(-1.4 * s + i * 0.7 * s, 1.4 * s, 0.9 * s, 0.14 * s, 1.1 * s, 0.14 * s, p.col);
+        bx(0, 1.4 * s, -0.4 * s, 1.5 * s, 1.1 * s, 0.2 * s, [226, 224, 214]); bx(0, 2.65 * s, 0, 1.8 * s, 0.18 * s, 1.3 * s, p.col); bx(0, 3.0 * s, 0, 1.4 * s, 0.2 * s, 1.0 * s, p.col2); break;
+      case 'ice':
+        for (i = 0; i < 4; i++) { var ih = (1.2 + ((i * 0.7) % 1.6)) * s; bxr((-0.75 + i * 0.5) * s, ih, (i % 2 ? 0.3 : -0.3) * s, 0.3 * s, ih, 0.3 * s, 0, (i - 1.5) * 0.08, i % 2 ? p.col : [220, 244, 255], { outline: 0.3, lift: 0.18 }); }
+        break;
+      case 'rock':
+        bxr(0, 0.5 * s, 0, 0.9 * s, 0.5 * s, 0.7 * s, 0.5, 0, p.col); bxr(0.8 * s, 0.35 * s, 0.2 * s, 0.5 * s, 0.35 * s, 0.5 * s, 1.1, 0, [p.col[0] * 0.85, p.col[1] * 0.85, p.col[2] * 0.85]); break;
+      case 'volcano':
+        bx(0, 0.6 * s, 0, 2.2 * s, 0.6 * s, 2.0 * s, p.col); bx(0, 1.5 * s, 0, 1.5 * s, 0.45 * s, 1.4 * s, [p.col[0] * 1.15, p.col[1] * 1.15, p.col[2] * 1.15]); bx(0, 2.2 * s, 0, 0.9 * s, 0.3 * s, 0.85 * s, p.col);
+        sp(0, 2.65 * s, 0, 0.55 * s, p.col2, { outline: false, lift: 0.5 }); sp(0.3 * s, 3.4 * s + Math.sin(G.time * 3 + p.rot) * 0.15, 0, 0.2 * s, [255, 170, 60], { outline: false, lift: 0.6 }); break;
+      case 'coral':
+        sp(0, 0.6 * s, 0, 0.6 * s, p.col); sp(0.5 * s, 0.95 * s, 0, 0.45 * s, p.col2); sp(-0.45 * s, 0.8 * s, 0.1 * s, 0.4 * s, [200, 90, 190]);
+        bx(-0.4 * s, 1.3 * s, 0, 0.08 * s, 1.0 * s, 0.08 * s, p.col2); bx(0.1 * s, 1.5 * s, 0, 0.08 * s, 1.2 * s, 0.08 * s, p.col); break;
+      case 'kelp':
+        bx(0, 2 * s, 0, 0.1 * s, 2 * s, 0.1 * s, [40, 140, 90], { outline: 0.1 }); bx(0.3 * s, 1.5 * s, 0.1 * s, 0.09 * s, 1.5 * s, 0.09 * s, [50, 160, 100], { outline: 0.1 }); break;
+      case 'mush':
+        bx(0, 0.9 * s, 0, 0.3 * s, 0.9 * s, 0.3 * s, [245, 235, 215]); sp(0, 2.0 * s, 0, 1.1 * s, p.col, { lift: 0.08 });
+        sp(0.4 * s, 2.4 * s, 0.5 * s, 0.18 * s, p.col2, { outline: false }); sp(-0.5 * s, 2.2 * s, 0.5 * s, 0.14 * s, p.col2, { outline: false }); sp(0.1 * s, 2.7 * s, 0.4 * s, 0.12 * s, p.col2, { outline: false }); break;
+      case 'crystal':
+        for (i = 0; i < 3; i++) { var ch = (1.2 + 0.6 * (i % 2)) * s; bxr((i - 1) * 0.6 * s, ch, (i % 2) * 0.3 * s, 0.22 * s, ch, 0.22 * s, i * 0.7, (i - 1) * 0.18, p.col, { lift: 0.3, outline: 0.2 }); }
+        break;
+      case 'bamboo':
+        for (i = 0; i < 3; i++) bx((i - 1) * 0.35, (2.2 + i % 2 * 0.8) * 1, (i % 2) * 0.2, 0.07, 2.2 + i % 2 * 0.8, 0.07, [96, 160, 70], { outline: 0.15 }); break;
+      case 'b':
+        bx(0, p.hy, 0, p.hx, p.hy, p.hz, p.col, { outline: 0.25, wins: p.z > -45 ? p.wins : null, winFace: p.side < 0 ? 0 : 1 });
+        if (p.neon) { bx(0, p.hy * 2 + 0.6, 0, 0.04, 0.6, 0.04, p.col2, { outline: 0 }); sp(0, p.hy * 2 + 1.3, 0, 0.16, p.col2, { outline: false, lift: 0.6 }); } break;
+      case 'l':
+        addBox(x, 2.1, z, 0.06, 2.1, 0.06, AX, AY, AZ, [60, 64, 70], { outline: 0 });
+        addSphere(x - p.side * 0.5, 4.3, z, 0.22, [255, 224, 150], { outline: false, lift: 0.2 }); break;
+      case 'c':
+        var ac = rotAxes(0, p.rot, 0);
+        addBox(x, p.hx, z, p.hx, p.hx, p.hx, ac[0], ac[1], ac[2], p.col, { outline: 0.4 });
+        addShadow(x, z, p.hx * 1.5, 0.22); break;
+    }
+  }
+  function genSkyline() {
+    var r = mulberry32(G.world * 977 + 13), P = 1200, x = 0;
+    skyline = { P: P, far: [] };
+    while (x < P) { var w = 40 + r() * 70; skyline.far.push({ x: x, w: w, h: 0.04 + r() * 0.16 }); x += w + r() * 14; }
+  }
+  function layoutCamera() {
+    var halfW = wall ? wall.W / 2 : 2.2, hh = wall ? wall.Hh : 2.6;
+    var byW = (halfW + 1.0) / cam.tanH + 0.55, byH = (hh / 2 + 1.0) / cam.tanV + 0.55;
+    return Math.max(5.2, byW, byH);
+  }
+
+
+  var LAYOUTS = ['rect', 'pyramid', 'arch', 'stairs', 'fortress', 'checker', 'tower', 'wide'];
+  var MODS = {
+    armor: { name: 'Pancéřová', note: 'Pancéřová zeď! Mířit na slabiny, jinak údery slábnou' },
+    gold: { name: 'Zlatá žíla', note: 'Zlatá žíla! Trojnásobek zlaťáků' },
+    tnt: { name: 'Výbušná', note: 'Výbušniny! Klepni na červené cihly' },
+    regen: { name: 'Regenerující', note: 'Zeď se hojí, když přestaneš bít!' },
+    quick: { name: 'Čilá', note: 'Čilá zeď! Slabiny skáčou rychle, ale bolí víc' }
+  };
+    var BOSS_NODES = [[0, 2.75], [-1.78, 3.4], [1.78, 3.4], [0, 4.1], [0, 1.75]];
+  function layoutOf(kind) {
+    var o = { cols: 5, rows: 6, keep: function () { return true; } };
+    if (kind === 'pyramid') { o.cols = 7; o.rows = 4; o.keep = function (c, r) { return Math.abs(c - 3) <= 3 - r; }; }
+    else if (kind === 'arch') { o.cols = 6; o.rows = 6; o.keep = function (c, r) { if (r <= 2 && (c === 2 || c === 3)) return false; if (r === 5 && (c === 0 || c === 5)) return false; return true; }; }
+    else if (kind === 'stairs') { o.cols = 6; o.rows = 6; o.keep = function (c, r) { return r <= 5 - c; }; }
+    else if (kind === 'fortress') { o.cols = 7; o.rows = 6; o.keep = function (c, r) { if (r <= 2) return true; if (c === 0 || c === 1 || c === 5 || c === 6) return r <= 4 || c === 0 || c === 6; return false; }; }
+    else if (kind === 'checker') { o.cols = 6; o.rows = 6; o.keep = function (c, r) { return r < 2 || (c + r) % 2 === 0; }; }
+    else if (kind === 'tower') { o.cols = 3; o.rows = 9; }
+    else if (kind === 'wide') { o.cols = 7; o.rows = 4; }
+    return o;
+  }
+  function makeWall(n) {
+    var MM = MAPS[mapOf(n) - 1], stg = stOf(n), mat = { n: MM.mat[0], h: MM.mat[1] + (stg > 25 ? 14 : 0), s: MM.mat[2], l: MM.mat[3] }, bw = 0.84, bh = 0.44, bricks = [], r, c, i, kind = 'rect', mod = null;
+    if (n > 1) { do { kind = LAYOUTS[(Math.random() * LAYOUTS.length) | 0]; } while (kind === G.lastLayout); }
+    G.lastLayout = kind;
+    var L = layoutOf(kind), cols = L.cols, rows = L.rows;
+    if (stg >= 3 && Math.random() < 0.65) { var keys = ['armor', 'gold', 'tnt', 'tnt', 'regen', 'quick']; mod = keys[(Math.random() * keys.length) | 0]; }
+    for (r = 0; r < rows; r++) for (c = 0; c < cols; c++) {
+      if (!L.keep(c, r)) continue;
+      var tone = Math.random(), rgb;
+      if (mod === 'armor') rgb = hsl2rgb(210, 10, 36 + tone * 12);
+      else if (mod === 'gold') rgb = hsl2rgb(46, 85, 48 + tone * 12);
+      else if (mod === 'regen') rgb = hsl2rgb(mat.h * 0.3 + 70, 35, 34 + tone * 10);
+      else rgb = hsl2rgb(mat.h, mat.s, mat.l + (tone - 0.5) * 10);
+      bricks.push({ c: c, r: r, x: (c + 0.5 - cols / 2) * bw, y: (r + 0.5) * bh, rgb: rgb, alive: true, tnt: false });
+    }
+    if (mod === 'tnt') {
+      var cand = bricks.slice().sort(function () { return Math.random() - 0.5; });
+      for (i = 0; i < Math.min(3, Math.max(1, Math.floor(bricks.length / 8))); i++) { cand[i].tnt = true; cand[i].rgb = [205, 45, 35]; }
+    }
+    var hp = ECON.wallHp(n);
+    return { kind: 'wall', n: n, boss: false, mod: mod, layout: kind, cols: cols, rows: rows, bw: bw, bh: bh, W: cols * bw, Hh: rows * bh, mat: mat, max: hp, hp: hp, bricks: bricks, alive: bricks.length, total: bricks.length, z: -27, flash: 0, shake: 0 };
+  }
+  function makeBoss(n) {
+    var m = mapOf(n), MM = MAPS[m - 1], fin = stOf(n) === PER, T = bossTune(n), hp = ECON.wallHp(n);
+    return { kind: 'boss', n: n, boss: true, fin: fin, tune: T, mod: null, bricks: [], alive: 1, total: 1, bw: 0.84, bh: 0.44, W: 5.8, Hh: 4.8,
+      mat: { n: MM.mat[0] }, rgb: hsl2rgb(MM.bh[0], MM.bh[1], Math.min(70, MM.bh[2] + (fin ? 6 : 0))), variant: (m * 2 + (fin ? 1 : 0)) % 3,
+      name: MM.bn[fin ? 1 : 0], max: hp, hp: hp, z: -27, flash: 0, shake: 0, stun: 0, enraged: false,
+      atk: { state: 'idle', el: 0, dur: T.idle, side: 1, hitDone: false } };
+  }
+  function nextWall() {
+    wall = isBoss(S.w) ? makeBoss(S.w) : makeWall(S.w);
+    var wd = mapOf(S.w) - 1;
+    if (wd !== G.world) { G.world = wd; applyWorld(); }
+    G.phase = 'walk'; G.walkT = 0; G.weak = null; G.dogBite = 0; G.lastDmg = -9; bonus = null;
+    updWall();
+    if (wall.kind === 'boss') { showNote((wall.fin ? 'ZÁVĚREČNÝ BOSS: ' : 'BOSS: ') + wall.name); sfx('roar'); }
+    else if (stOf(S.w) === 1) { var MM = MAPS[wd]; showNote(MM.e + ' Mapa ' + (wd + 1) + ': ' + MM.n); }
+    else if (wall.mod) showNote(MODS[wall.mod].note);
+  }
+  function applyWorld() { var p = worldPal(); FOG = p.sky[2]; genProps(); genSkyline(); }
+
+  function pickWeak() {
+    if (wall.kind === 'boss') {
+      var prev = G.weak ? G.weak.idx : -1, idx;
+      do { idx = (Math.random() * BOSS_NODES.length) | 0; } while (idx === prev);
+      G.weak = { idx: idx, age: 0, b: { x: BOSS_NODES[idx][0], y: BOSS_NODES[idx][1], alive: true } };
+      return;
+    }
+    var alive = wall.bricks.filter(function (b) { return b.alive; });
+    if (!alive.length) { G.weak = null; return; }
+    var pb = G.weak && G.weak.b, b = alive[(Math.random() * alive.length) | 0];
+    if (alive.length > 1 && b === pb) b = alive[(alive.indexOf(b) + 1) % alive.length];
+    G.weak = { b: b, age: 0 };
+  }
+
+  /* ---------- Efekty ---------- */
+  function spawnDebris(b, power, fromX, fromY) {
+    if (debris.length > 170) debris.shift();
+    var dx = b.x - fromX, dy = b.y - fromY, l = Math.sqrt(dx * dx + dy * dy) || 1;
+    debris.push({ x: b.x, y: b.y, z: b.z !== undefined ? b.z : wall.z, vx: dx / l * rnd(1, 4) * power, vy: rnd(2.5, 7) * power, vz: rnd(-5, 3.5) * power,
+      rx: rnd(0, 6), ry: rnd(0, 6), rz: rnd(0, 6), vrx: rnd(-9, 9), vry: rnd(-9, 9), vrz: rnd(-9, 9),
+      hx: b.hx || wall.bw / 2 - 0.012, hy: b.hy || wall.bh / 2 - 0.012, hz: b.hz || 0.25, rgb: b.rgb, life: rnd(1.4, 2.2) });
+  }
+  function spawnSparks(x, y, z, n, weak) {
+    for (var i = 0; i < n; i++) {
+      if (sparks.length > 80) sparks.shift();
+      sparks.push({ x: x, y: y, z: z, vx: rnd(-3, 3), vy: rnd(0.5, 5), vz: rnd(0.5, 4), life: rnd(0.25, 0.55), col: weak ? (i % 2 ? '#ff8a3d' : '#ffe27a') : '#ffd84a', s: weak ? 0.07 : 0.05 });
+    }
+  }
+  function spawnDust(x, z, n, big) {
+    for (var i = 0; i < n; i++) {
+      if (dusts.length > 40) dusts.shift();
+      dusts.push({ x: x + rnd(-1.8, 1.8), y: rnd(0.1, 0.5), z: z + rnd(-0.3, 1), vx: rnd(-0.6, 0.6), vy: rnd(0.4, 1.4), vz: rnd(0.2, 1.4), r: rnd(0.25, 0.5) * (big ? 1.5 : 1), life: rnd(0.7, 1.2), max: 1.2 });
+    }
+  }
+  function addRing(x, y, z, weak) { if (rings.length > 8) rings.shift(); rings.push({ x: x, y: y, z: z, t: 0, weak: weak }); }
+  function addText(x, y, z, str, color, size, vy) {
+    if (!proj(x, y, z)) return;
+    if (texts.length > 22) texts.shift();
+    texts.push({ x: pr.x + rnd(-8, 8), y: pr.y, vy: vy || -70, text: str, c: color, size: size, life: 0.95 });
+  }
+
+  /* ---------- Útok ---------- */
+  function planeZ() { return wall.z + 0.25; }
+  function pickWall(cx, cy) {
+    var rc = stage.getBoundingClientRect();
+    var nx = (cx - rc.left) / rc.width * 2 - 1, ny = 1 - (cy - rc.top) / rc.height * 2;
+    var dx = cam.fx + cam.rx * nx * cam.tanH + cam.ux * ny * cam.tanV;
+    var dy = cam.fy + cam.ry * nx * cam.tanH + cam.uy * ny * cam.tanV;
+    var dz = cam.fz + cam.rz * nx * cam.tanH + cam.uz * ny * cam.tanV;
+    var res = { x: 0, y: wall.Hh / 2, brick: null, weak: false };
+    if (dz >= -1e-4) return res;
+    var t = (planeZ() - cam.z) / dz;
+    if (t < 0) return res;
+    var px = cam.x + dx * t, py = cam.y + dy * t;
+    res.x = Math.max(-wall.W / 2 - 0.3, Math.min(wall.W / 2 + 0.3, px)); res.y = Math.max(0.1, Math.min(wall.Hh + 0.2, py));
+    if (wall.kind === 'boss') {
+      if (px >= -2.5 && px <= 2.5 && py >= 0.1 && py <= 4.8) {
+        res.brick = { x: px, y: py, alive: true, boss: true }; res.x = px; res.y = py;
+        if (G.weak && Math.hypot(G.weak.b.x - px, G.weak.b.y - py) <= 0.6) res.weak = true;
+      }
+      return res;
+    }
+    var best = null, bd = 1e9, i, b, d;
+    for (i = 0; i < wall.bricks.length; i++) {
+      b = wall.bricks[i]; if (!b.alive) continue;
+      d = Math.hypot(Math.max(0, Math.abs(px - b.x) - wall.bw / 2), Math.max(0, Math.abs(py - b.y) - wall.bh / 2));
+      if (d < bd) { bd = d; best = b; }
+    }
+    if (best && bd < 1.2) {
+      res.brick = best;
+      res.x = Math.max(best.x - wall.bw / 2, Math.min(best.x + wall.bw / 2, px));
+      res.y = Math.max(best.y - wall.bh / 2, Math.min(best.y + wall.bh / 2, py));
+      if (G.weak && G.weak.b.alive && Math.hypot(G.weak.b.x - px, G.weak.b.y - py) <= 0.56) res.weak = true;
+    }
+    return res;
+  }
+  function tap(cx, cy) {
+    if (G.phase !== 'fight' || !wall) return;
+    audio();
+    if (G.hurt > 0) return;
+    if (tryBonus(cx, cy)) return;
+    if (wall.kind === 'boss' && tryInterrupt(cx, cy)) return;
+    if (G.cd > 0) { if (G.cd <= 0.16) G.buf = { x: cx, y: cy, t: G.time }; return; }
+    swing(cx, cy);
+  }
+  function swing(cx, cy) {
+    var P = pickWall(cx, cy), cdv = swingCdOf(S.u.spd) * (AB.rage > 0 ? 0.5 : 1), k = Math.min(1, cdv / 0.3);
+    G.cd = cdv; G.cdMax = cdv;
+    var lim = Math.min(2.7, wall.W / 2 - 0.1);
+    hero.tx = Math.max(-lim, Math.min(lim, P.x - 0.5)); G.lastSwing = G.time;
+    if (P.y > 1.5) hero.jumpV = Math.min(4, (P.y - 1.2) * 3);
+    G.swing = { t: 0, hitT: Math.max(0.04, 0.08 * k), dur: Math.max(0.12, 0.26 * k), P: P, done: false, k: k };
+  }
+  function applyHit(P) {
+    var now = G.time, weak = P.weak, d, comboM, bossFight = wall.kind === 'boss', br = P.brick;
+    var armored = !weak && br && (bossFight || wall.mod === 'armor');
+    if (!br) {
+      G.combo = 0; G.lastHit = now; showCombo();
+      d = dmgBase() * 0.4;
+    } else {
+      if (now - G.lastHit <= COMBO_WINDOW) G.combo += 1; else G.combo = 1;
+      if (weak) G.combo += 2;
+      G.lastHit = now;
+      comboM = 1 + COMBO_STEP * Math.min(G.combo, COMBO_CAP);
+      d = dmgBase() * comboM * (weak ? weakMult() * (wall.mod === 'quick' ? 1.5 : 1) : 1);
+      if (armored) d *= bossFight ? wall.tune.arm : 0.35;
+      if (bossFight && wall.stun > 0) d *= 2;
+      showCombo();
+    }
+    if (AB.rage > 0) d *= 1.6;
+    d = clampBig(d);
+    var z = planeZ();
+    wall.hp -= d; wall.flash = 1; wall.shake = weak ? 5 : 2.5; G.lastDmg = now;
+    if (!RM) G.shake = Math.max(G.shake, weak ? 5 : 1.8);
+    spawnSparks(P.x, P.y, z + 0.1, weak ? 16 : (br ? 7 : 3), weak);
+    addRing(P.x, P.y, z + 0.05, weak);
+    if (bossFight && br) spawnDebris({ x: P.x, y: P.y, z: z + 0.1, hx: 0.08, hy: 0.07, hz: 0.08, rgb: wall.rgb }, 0.5, P.x, P.y - 0.3);
+    if (br) addText(P.x, P.y + 0.3, z + 0.2, fmt(d) + (weak ? '!' : ''), weak ? '#ffb02e' : (armored ? '#9fb0bd' : '#f7f5ef'), weak ? 28 : 18, weak ? -95 : -70);
+    else addText(P.x, P.y + 0.3, z + 0.2, 'Mimo', '#c9c3b4', 15, -50);
+    if (weak) {
+      S.weakHits++;
+      addText(P.x, P.y + 0.85, z + 0.2, 'SLABINA!', '#ff6a2a', 20, -60);
+      sfx('weak'); pickWeak();
+      if (S.weakHits >= 3) $('#hint').hidden = true;
+    } else sfx(armored ? 'armor' : (br ? 'hit' : 'miss'));
+    if (br && br.tnt && br.alive) explodeTnt(br, 0);
+    erode(P.x, P.y);
+    if (wall.hp <= 0) breakWall(); else updHp();
+  }
+  function explodeTnt(b, depth) {
+    if (!b.alive) return;
+    removeBrick(b, 2.2, b.x, b.y - 0.4);
+    wall.hp -= wall.max * 0.1; wall.flash = 1;
+    addRing(b.x, b.y, planeZ() + 0.1, true);
+    spawnSparks(b.x, b.y, planeZ() + 0.2, 26, true);
+    addText(b.x, b.y + 0.45, planeZ() + 0.3, 'BUM!', '#ff6a2a', 32, -80);
+    if (!RM) G.shake = Math.max(G.shake, 14);
+    sfx('boom');
+    wall.bricks.filter(function (o) { return o.alive && Math.hypot(o.x - b.x, o.y - b.y) < 1.15; }).forEach(function (o) {
+      if (!o.alive) return;
+      if (o.tnt && depth < 3) explodeTnt(o, depth + 1); else removeBrick(o, 1.8, b.x, b.y);
+    });
+  }
+  /* ---------- Aktivní schopnosti ---------- */
+  var AB = { cd: [0, 0, 0], rage: 0, shield: 0, sig: '' };
+  var ABIL = [
+    { n: 'Blesk', e: '⚡', lvl: 3, cd: 16, tx: 'Silný zásah do slabiny' },
+    { n: 'Zuřivost', e: '🔥', lvl: 8, cd: 28, tx: '8 s: rychleji a silněji' },
+    { n: 'Štít', e: '🛡️', lvl: 15, cd: 24, tx: 'Odrazí další úder bosse' }
+  ];
+  function useAbil(i) {
+    return; /* schopnosti jsou vypnuté */
+    var def = ABIL[i];
+    if (!wall || G.phase !== 'fight' || G.paused || S.L < def.lvl || AB.cd[i] > 0) return;
+    AB.cd[i] = def.cd;
+    var z = planeZ();
+    if (i === 0) {
+      var b = G.weak && G.weak.b, x = b ? b.x : 0, y = b ? b.y : wall.Hh * 0.5, boss = wall.kind === 'boss';
+      var d = clampBig(dmgBase() * weakMult() * 6 * (boss ? wall.tune.arm * 1.5 : 1) * (AB.rage > 0 ? 1.6 : 1));
+      wall.hp -= d; wall.flash = 1; wall.shake = 8; G.lastDmg = G.time;
+      if (!RM) G.shake = Math.max(G.shake, 10);
+      spawnSparks(x, y, z + 0.1, 40, true); addRing(x, y, z + 0.05, true); addRing(x, y, z + 0.2, true);
+      addText(x, y + 0.6, z + 0.2, 'BLESK! ' + fmt(d), '#4fb0ff', 30, -90);
+      sfx('boom'); erode(x, y);
+      if (wall.hp <= 0) breakWall(); else updHp();
+    } else if (i === 1) {
+      AB.rage = 8; addText(hero.x, 2.1, hero.z, 'ZUŘIVOST!', '#ff6a2a', 30, -80); sfx('level');
+      spawnSparks(hero.x, 1.3, hero.z, 20, true);
+    } else {
+      AB.shield = 5; addText(hero.x, 2.1, hero.z, 'ŠTÍT!', '#4fb0ff', 30, -80); sfx('armor');
+    }
+    updAbil(true);
+  }
+  function tickAbil(dt) {
+    for (var i = 0; i < 3; i++) if (AB.cd[i] > 0) AB.cd[i] = Math.max(0, AB.cd[i] - dt);
+    AB.rage = Math.max(0, AB.rage - dt); AB.shield = Math.max(0, AB.shield - dt);
+    updAbil(false);
+  }
+  function updAbil(force) {
+    var box = $('#abils'); if (!box) return;
+    if (!box.firstChild) {
+      ABIL.forEach(function (a, i) {
+        var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'ab'; bt.dataset.i = i;
+        bt.setAttribute('aria-label', a.n + ' (' + (i + 1) + '): ' + a.tx);
+        bt.innerHTML = '<b></b><span></span><i></i>'; box.appendChild(bt);
+      });
+      box.addEventListener('pointerdown', function (e) { var bt = e.target.closest('.ab'); if (!bt) return; e.preventDefault(); e.stopPropagation(); useAbil(+bt.dataset.i); });
+      box.addEventListener('click', function (e) { e.stopPropagation(); });
+    }
+    var sig = [S.L >= 3, S.L >= 8, S.L >= 15, AB.cd.map(function (c) { return Math.ceil(c); }).join(), AB.rage > 0, AB.shield > 0, G.phase].join('|');
+    if (!force && sig === AB.sig) { ABIL.forEach(function (a, i) { var f = box.children[i].lastChild; f.style.height = (AB.cd[i] > 0 ? Math.round(100 * AB.cd[i] / a.cd) : 0) + '%'; }); return; }
+    AB.sig = sig;
+    ABIL.forEach(function (a, i) {
+      var bt = box.children[i], lk = S.L < a.lvl;
+      bt.className = 'ab' + (lk ? ' lk' : '') + (!lk && AB.cd[i] <= 0 && G.phase === 'fight' ? ' rd' : '') + ((i === 1 && AB.rage > 0) || (i === 2 && AB.shield > 0) ? ' on' : '');
+      bt.children[0].textContent = lk ? '🔒' : a.e;
+      bt.children[1].textContent = lk ? 'Lvl ' + a.lvl : (AB.cd[i] > 0 ? Math.ceil(AB.cd[i]) + ' s' : a.n);
+      bt.lastChild.style.height = (AB.cd[i] > 0 ? Math.round(100 * AB.cd[i] / a.cd) : 0) + '%';
+    });
+  }
+  var noteTimer = 0;
+  function showNote(txt) {
+    var el = $('#note'); el.textContent = txt; el.classList.add('show');
+    clearTimeout(noteTimer); noteTimer = setTimeout(function () { el.classList.remove('show'); }, 2900);
+  }
+
+  /* ---------- Zlatý beran (bonus) ---------- */
+  function updBonus(dt) {
+    if (!bonus) {
+      G.bonusT -= dt;
+      if (G.bonusT <= 0 && wall.kind === 'wall' && wall.alive > 3) { var dir = Math.random() < 0.5 ? 1 : -1; bonus = { x: -dir * 5.4, dir: dir, t: 0, z: wall.z + 1.2 }; G.bonusT = rnd(22, 38); }
+      return;
+    }
+    bonus.t += dt; bonus.x += bonus.dir * dt * 3.1;
+    if (Math.abs(bonus.x) > 5.8) bonus = null;
+  }
+  function tryBonus(cx, cy) {
+    if (!bonus) return false;
+    var rc = stage.getBoundingClientRect();
+    if (!proj(bonus.x, 0.65, bonus.z)) return false;
+    if (Math.hypot(cx - rc.left - pr.x, cy - rc.top - pr.y) > Math.max(46, W * 0.13)) return false;
+    var gain = clampBig(ECON.wallGold(S.w) * goldMult() * 8), bx = bonus.x, bz = bonus.z;
+    S.gold = clampBig(S.gold + gain); bonus = null;
+    spawnSparks(bx, 0.7, bz, 24, true);
+    addText(bx, 1.4, bz, '+' + fmt(gain), '#f2b705', 30, -80);
+    popBanner('Zlatý beran!'); sfx('gold'); updTop(); updShop();
+    return true;
+  }
+  function buildBonus() {
+    if (!bonus) return;
+    var x = bonus.x, z = bonus.z, dir = bonus.dir, hop = Math.abs(Math.sin(bonus.t * 11)) * 0.18, lg = Math.sin(bonus.t * 11) * 0.5, gold = [255, 206, 70];
+    addShadow(x, z, 0.5, 0.3);
+    addLimb(x - 0.15, 0.3 + hop, z - 0.1, [0, -Math.cos(lg), Math.sin(lg)], 0.3, 0.05, HIDE, { outline: 0.4 });
+    addLimb(x + 0.15, 0.3 + hop, z + 0.1, [0, -Math.cos(lg), -Math.sin(lg)], 0.3, 0.05, HIDE, { outline: 0.4 });
+    addSphere(x, 0.62 + hop, z, 0.3, gold, { lift: 0.25 });
+    addSphere(x - dir * 0.18, 0.7 + hop, z, 0.2, gold, { lift: 0.3 });
+    addSphere(x + dir * 0.34, 0.74 + hop, z, 0.17, HIDE, { bias: -0.2 });
+    addSphere(x + dir * 0.42, 0.78 + hop, z + 0.09, 0.04, [255, 255, 255], { outline: false, bias: -0.4 });
+    addDot(x + rnd(-0.45, 0.45), 0.3 + rnd(0, 0.9), z + rnd(-0.2, 0.2), 0.05, '#ffe27a', 1, -1);
+  }
+
+  /* ---------- Boss ---------- */
+  function norm3(v) { var l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; }
+  function lerp3(a, b, t) { return norm3([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]); }
+  var ARM_DOWN = norm3([0, -1, 0.06]), ARM_UP = norm3([0, 0.6, 0.8]), ARM_FWD = norm3([0, -0.4, 0.92]);
+  function armDir(side) {
+    var A = wall.atk, st = A.state;
+    if (side !== A.side) return ARM_DOWN;
+    if (st === 'tele') return lerp3(ARM_DOWN, ARM_UP, Math.min(1, A.el / 0.35));
+    if (st === 'slam') return lerp3(ARM_UP, ARM_FWD, Math.min(1, A.el / 0.14));
+    if (st === 'rec') return lerp3(ARM_FWD, ARM_DOWN, Math.min(1, A.el / A.dur));
+    if (st === 'stun') return lerp3(ARM_UP, ARM_DOWN, Math.min(1, A.el / 0.4));
+    return ARM_DOWN;
+  }
+  function fistPos(side) {
+    var z0 = wall.z - 0.45;
+    return [side * 1.75 + ARM_UP[0] * 2.2, 3.25 + ARM_UP[1] * 2.2, z0 + ARM_UP[2] * 2.2];
+  }
+  function updBoss(dt) {
+    var A = wall.atk; A.el += dt;
+    if (wall.stun > 0) wall.stun -= dt;
+    if (!wall.enraged && wall.hp < wall.max * wall.tune.enr) { wall.enraged = true; popBanner('Kolos zuří!'); sfx('roar'); }
+    if (A.state === 'idle') {
+      if (A.el >= A.dur) { A.state = 'tele'; A.el = 0; A.dur = wall.tune.tele * (wall.enraged ? 0.8 : 1); A.side = Math.random() < 0.5 ? -1 : 1; sfx('warn'); showNote('Boss se rozmáchl! Klepni na jeho pěst!'); }
+    } else if (A.state === 'tele') {
+      if (A.el >= A.dur) { A.state = 'slam'; A.el = 0; A.dur = 0.14; }
+    } else if (A.state === 'slam') {
+      if (A.el >= 0.14) { bossSlam(); A.state = 'rec'; A.el = 0; A.dur = 0.7; }
+    } else if (A.state === 'rec') {
+      if (A.el >= A.dur) { A.state = 'idle'; A.el = 0; A.dur = Math.max(1.1, wall.tune.idle - (wall.enraged ? 1.2 : 0)) + Math.random() * 1.6; if (Math.random() < wall.tune.dbl) A.dur = 0.55; }
+    } else if (A.state === 'stun') {
+      if (A.el >= A.dur) { A.state = 'idle'; A.el = 0; A.dur = Math.max(1.2, wall.tune.idle - 0.4 - (wall.enraged ? 1 : 0)) + Math.random() * 1.4; }
+    }
+  }
+  function bossSlam() {
+    if (AB.shield > 0) {
+      AB.shield = 0; wall.hp = Math.max(wall.max * 0.001, wall.hp - wall.max * 0.04); wall.flash = 1; updHp();
+      addRing(0, 0.12, wall.z + 1.2, true); addText(hero.x, 2.0, hero.z, 'ODRAZ!', '#4fb0ff', 32, -80); sfx('armor');
+      if (!RM) G.shake = Math.max(G.shake, 8);
+      return;
+    }
+    addRing(0, 0.12, wall.z + 1.2, true); addRing(hero.x, 0.12, hero.z, true);
+    spawnDust(0, wall.z + 0.8, 16, true);
+    if (!RM) G.shake = Math.max(G.shake, 14);
+    sfx('slam');
+    G.hurt = 1.3; G.combo = 0; showCombo(); G.swing = null; G.buf = null;
+    addText(hero.x, 1.9, hero.z, 'Au!', '#ff6a2a', 30, -70);
+  }
+  function tryInterrupt(cx, cy) {
+    var A = wall.atk;
+    if (A.state !== 'tele') return false;
+    var rc = stage.getBoundingClientRect(), p = fistPos(A.side);
+    if (!proj(p[0], p[1], p[2])) return false;
+    if (Math.hypot(cx - rc.left - pr.x, cy - rc.top - pr.y) > Math.max(54, W * 0.14)) return false;
+    A.state = 'stun'; A.el = 0; A.dur = 2.6; wall.stun = 2.6; wall.flash = 1;
+    addText(0, 5.2, wall.z + 0.5, 'OMRÁČEN!', '#ffe27a', 30, -40);
+    spawnSparks(p[0], p[1], p[2], 18, true);
+    sfx('stun'); if (!RM) G.shake = Math.max(G.shake, 6);
+    return true;
+  }
+  function bossParts() {
+    var B = wall, z0 = B.z - 0.45, rgb = B.rgb, dk = [rgb[0] * 0.68, rgb[1] * 0.68, rgb[2] * 0.68], lt = [Math.min(255, rgb[0] * 1.3), Math.min(255, rgb[1] * 1.3), Math.min(255, rgb[2] * 1.3)];
+    function P(x, y, z, hx, hy, hz, c) { return { x: x, y: y, z: z, hx: hx, hy: hy, hz: hz, rgb: c }; }
+    return [P(-0.85, 0.75, z0, 0.5, 0.75, 0.55, rgb), P(0.85, 0.75, z0, 0.5, 0.75, 0.55, rgb), P(0, 1.65, z0, 1.15, 0.25, 0.62, dk),
+      P(-0.7, 2.65, z0, 0.7, 0.95, 0.7, rgb), P(0.7, 2.65, z0, 0.7, 0.95, 0.7, rgb), P(-1.75, 3.35, z0, 0.5, 0.42, 0.55, lt), P(1.75, 3.35, z0, 0.5, 0.42, 0.55, lt),
+      P(0, 4.1, z0 + 0.05, 0.62, 0.5, 0.55, rgb), P(-1.75, 2.3, z0, 0.33, 0.95, 0.33, rgb), P(1.75, 2.3, z0, 0.33, 0.95, 0.33, rgb),
+      P(-1.75, 1.15, z0, 0.46, 0.4, 0.46, lt), P(1.75, 1.15, z0, 0.46, 0.4, 0.46, lt)];
+  }
+  function buildBoss() {
+    var B = wall, z0 = B.z - 0.45, rgb = B.rgb, dk = [rgb[0] * 0.68, rgb[1] * 0.68, rgb[2] * 0.68], lt = [Math.min(255, rgb[0] * 1.3), Math.min(255, rgb[1] * 1.3), Math.min(255, rgb[2] * 1.3)];
+    var sx = B.shake ? rnd(-B.shake, B.shake) * 0.012 : 0, o = { lift: B.flash * 0.3 }, bob = Math.sin(G.time * 2) * 0.04, i, side, k;
+    var enr = B.enraged, pulse = 0.5 + 0.5 * Math.sin(G.time * 5);
+    addBox(sx - 0.85, 0.75, z0, 0.5, 0.75, 0.55, AX, AY, AZ, rgb, o); addBox(sx + 0.85, 0.75, z0, 0.5, 0.75, 0.55, AX, AY, AZ, rgb, o);
+    addBox(sx, 1.65, z0, 1.15, 0.25, 0.62, AX, AY, AZ, dk, o);
+    addBox(sx, 2.65 + bob, z0, 1.4, 0.95, 0.7, AX, AY, AZ, rgb, o);
+    addBox(sx, 2.05 + bob, z0 + 0.02, 1.43, 0.1, 0.72, AX, AY, AZ, dk, o);
+    addBox(sx - 1.75, 3.35 + bob, z0, 0.5, 0.42, 0.55, AX, AY, AZ, lt, o); addBox(sx + 1.75, 3.35 + bob, z0, 0.5, 0.42, 0.55, AX, AY, AZ, lt, o);
+    addBox(sx, 4.1 + bob, z0 + 0.05, 0.62, 0.5, 0.55, AX, AY, AZ, rgb, o);
+    addBox(sx, 4.12 + bob, z0 + 0.6, 0.5, 0.13, 0.05, AX, AY, AZ, [22, 20, 26], { outline: 0 });
+    for (side = -1; side <= 1; side += 2) addSphere(sx + side * 0.24, 4.14 + bob, z0 + 0.66, 0.085, enr ? [255, 70, 50] : [255, 226, 110], { outline: false, lift: 0.45, bias: -0.5 });
+    if (B.fin) { addBox(sx, 4.68 + bob, z0 + 0.05, 0.62, 0.08, 0.55, AX, AY, AZ, [255, 206, 70], o); for (k = -2; k <= 2; k++) addBox(sx + k * 0.25, 4.88 + bob + (k % 2 === 0 ? 0.1 : 0), z0 + 0.05, 0.06, 0.14 + (k % 2 === 0 ? 0.1 : 0), 0.06, AX, AY, AZ, [255, 206, 70], o); }
+    else if (B.variant === 1) { for (side = -1; side <= 1; side += 2) { var hx = rotAxes(0, 0, -side * 0.55); addBox(sx + side * 0.5, 4.78 + bob, z0, 0.1, 0.34, 0.1, hx[0], hx[1], hx[2], lt, o); } }
+    else if (B.variant === 2) { for (k = -1; k <= 1; k++) addBox(sx + k * 0.4, 4.74 + bob + (k === 0 ? 0.08 : 0), z0 + 0.05, 0.12, 0.2 + (k === 0 ? 0.12 : 0), 0.12, AX, AY, AZ, lt, o); }
+    else { addBox(sx, 4.92 + bob, z0, 0.05, 0.3, 0.05, AX, AY, AZ, dk, o); addSphere(sx, 5.28 + bob, z0, 0.1, enr ? [255, 70, 50] : [255, 200, 70], { outline: false, lift: 0.4 }); }
+    addSphere(sx, 2.75 + bob, z0 + 0.74, 0.24 + 0.03 * pulse, [255, 150, 40], { outline: false, lift: 0.35 + 0.2 * pulse, bias: -0.4 });
+    for (side = -1; side <= 1; side += 2) {
+      var d = armDir(side), len = 1.9, S0 = [sx + side * 1.75, 3.25 + bob, z0];
+      addLimb(S0[0], S0[1], S0[2], d, len, 0.33, rgb, o);
+      var ax = [1, 0, 0], az = cross3(ax, d);
+      addBox(S0[0] + d[0] * (len + 0.3), S0[1] + d[1] * (len + 0.3), S0[2] + d[2] * (len + 0.3), 0.46, 0.4, 0.46, ax, d, az, lt, o);
+    }
+    if (B.stun > 0) for (i = 0; i < 3; i++) { var an = G.time * 6 + i * 2.094; addDot(sx + Math.cos(an) * 0.7, 5.0 + bob, z0 + Math.sin(an) * 0.7, 0.14, '#ffe27a', 1, -1); }
+    if (B.atk.state === 'tele') {
+      var fp = fistPos(B.atk.side);
+      if (proj(fp[0], fp[1], fp[2])) items.push({ d: dist2cam(fp[0], fp[1], fp[2]) - 3, t: 'weak', red: true, x: pr.x, y: pr.y, r: 0.42 * cam.f / pr.z });
+    }
+  }
+  function showCombo() {
+    var el = $('#combo');
+    if (G.combo < 2) { el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = 'Kombo ×' + G.combo + '<small>Síla úderu ×' + fmt(1 + COMBO_STEP * Math.min(G.combo, COMBO_CAP)) + (G.combo >= COMBO_CAP ? ' (max)' : '') + '</small>';
+    el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+  }
+  function erode(fx, fy) {
+    if (wall.kind === 'boss') return;
+    var wanted = Math.max(0, Math.ceil(Math.max(0, wall.hp) / wall.max * wall.total - 1e-9));
+    if (wall.alive <= wanted) return;
+    var alive = wall.bricks.filter(function (b) { return b.alive; });
+    alive.sort(function (a, b) { return Math.hypot(a.x - fx, a.y - fy) - Math.hypot(b.x - fx, b.y - fy); });
+    var n = wall.alive - wanted;
+    for (var i = 0; i < n && i < alive.length; i++) removeBrick(alive[i], 1, fx, fy);
+  }
+  function removeBrick(b, power, fx, fy) {
+    if (!b.alive) return;
+    b.alive = false; wall.alive--;
+    spawnDebris(b, power, fx, fy);
+    if (G.weak && G.weak.b === b) { if (wall.alive > 0) pickWeak(); else G.weak = null; }
+  }
+  // Efektní smrt bosse: otřesy, řetězové výbuchy, bliknutí, finální exploze a déšť zlaťáků.
+  function blastAt(x, y, z, size) {
+    fires.push({ x: x, y: y, z: z, r: size, age: 0, life: 0.45 + size * 0.5, vy: rnd(0.3, 1.2) });
+    var n = Math.round(4 + size * 8), i;
+    for (i = 0; i < n; i++) {
+      if (sparks.length > 160) sparks.shift();
+      sparks.push({ x: x, y: y, z: z, vx: rnd(-5, 5) * (0.6 + size), vy: rnd(1, 7) * (0.6 + size), vz: rnd(0.5, 5), life: rnd(0.4, 0.9), col: ['#ffe27a', '#ff8a3d', '#fff6dc', '#d8402a'][i % 4], s: 0.06 + size * 0.05 });
+    }
+  }
+  function startDeath() {
+    wall.dying = { t: 0, next: 0.05, n: 0 };
+    G.phase = 'dying'; G.swing = null; G.buf = null; G.weak = null; G.hurt = 0; bonus = null; G.combo = 0; showCombo();
+    wall.hp = 0; updHp(); wall.atk.state = 'stun'; wall.enraged = true; $('#banner').classList.remove('go');
+    flashW = 0.5; tsT = 0.35; sfx('slam');
+    addText(0, wall.Hh + 0.3, wall.z + 0.5, 'KO!', '#f2b705', 40, -50);
+  }
+  function updDying(dt) {
+    var D = wall.dying, prog, x, y;
+    D.t += dt; prog = Math.min(1, D.t / DYING_T);
+    wall.flash = 0.55 + 0.45 * Math.sin(D.t * 48);
+    wall.shake = Math.max(wall.shake, 6 + prog * 22);
+    G.shake = Math.max(G.shake, 4 + prog * 12);
+    D.next -= dt;
+    while (D.next <= 0 && D.t < DYING_T) {
+      D.next += 0.22 - 0.16 * prog; D.n++;
+      x = rnd(-1.9, 1.9); y = rnd(0.5, 4.5);
+      blastAt(x, y, wall.z + 0.2, 0.35 + 0.35 * prog * rnd(0.6, 1.2));
+      if (D.n % 2 === 0) spawnDust(x, wall.z, 3, true);
+      if (D.n % 3 === 0) sfx('boom');
+      if (D.n % 4 === 0) { var bp = bossParts(); spawnDebris(bp[(Math.random() * bp.length) | 0], 0.9, 0, 2.2); }
+    }
+    if (D.t >= DYING_T) finalBlast();
+  }
+  function finalBlast() {
+    var i, a;
+    for (i = 0; i < 9; i++) blastAt(rnd(-2.2, 2.2), rnd(0.4, 4.6), wall.z + 0.3, rnd(0.8, 1.5));
+    for (i = 0; i < 3; i++) addRing(rnd(-0.8, 0.8), 1 + i * 1.3, wall.z + 0.5, true);
+    for (i = 0; i < 34; i++) {
+      a = rnd(0, 6.2832);
+      sparks.push({ x: rnd(-1, 1), y: rnd(1.5, 3.5), z: wall.z, vx: Math.cos(a) * rnd(1, 6), vy: rnd(6, 13), vz: Math.sin(a) * rnd(1, 4) + 2, life: rnd(1.1, 1.8), col: '#f2b705', s: 0.13 });
+    }
+    flashW = 1; tsT = 0.45; if (!RM) G.shake = 26; hero.jumpV = Math.max(hero.jumpV, 6);
+    spawnDust(0, wall.z, 30, true);
+    breakWall();
+    wall.alive = 0;
+    sfx('boom'); setTimeout(function () { sfx('boom'); }, 140);
+  }
+  function breakWall() {
+    var boss = wall.kind === 'boss';
+    if (boss && !wall.dying && !RM) { startDeath(); return; }
+    if (boss) bossParts().forEach(function (p) { spawnDebris(p, wall.dying ? 2.4 : 1.5, 0, 2.2); });
+    wall.bricks.forEach(function (b) { if (b.alive) removeBrick(b, 1.25, 0, wall.Hh / 2); });
+    G.weak = null; bonus = null; G.hurt = 0;
+    var gain = clampBig(ECON.wallGold(wall.n) * goldMult() * (wall.mod === 'gold' ? 3 : 1));
+    S.gold = clampBig(S.gold + gain);
+    S.xp += ECON.wallXp(wall.n);
+    var gained = 0, need;
+    while (gained < 5000 && S.xp >= (need = ECON.xpNeed(S.L))) { S.xp -= need; S.L++; gained++; }
+    addText(0, wall.Hh * 0.6, wall.z + 0.5, '+' + fmt(gain), '#f2b705', 30, -60);
+    spawnDust(0, wall.z, boss ? 24 : 14, boss);
+    if (!RM) G.shake = boss ? 18 : 8;
+    sfx(boss ? 'boss' : 'break'); if (boss) setTimeout(function () { sfx('baa'); }, 250);
+    if (boss) popBanner('Kolos poražen!');
+    if (gained) {
+      var box = $('#lvlBox'); box.classList.remove('pulse'); void box.offsetWidth; box.classList.add('pulse');
+      if (!boss) popBanner('Béé! Level ' + S.L.toLocaleString('cs-CZ') + '!');
+      for (var i = 0; i < 26; i++) sparks.push({ x: hero.x + rnd(-0.3, 0.3), y: 1.3, z: hero.z, vx: rnd(-2.5, 2.5), vy: rnd(2.5, 7), vz: rnd(-2, 2), life: rnd(0.7, 1.2), col: ['#f2b705', '#d8402a', '#f7f5ef', '#4fb0ff'][i % 4], s: 0.07 });
+      setTimeout(function () { sfx('level'); sfx('baa'); }, 120);
+    }
+    var adv = advanceStage();
+    G.phase = 'pause'; G.pauseT = adv ? 2.8 : (boss ? 1.3 : 0.55); G.swing = null; G.buf = null;
+    updTop(); updHp(); updShop();
+    var pu = $('#purse'); pu.classList.remove('pulse'); void pu.offsetWidth; pu.classList.add('pulse');
+    save();
+  }
+  // Posun na další zeď. Po 50. zdi (bossovi) se odemkne další mapa.
+  function advanceStage() {
+    var m = mapOf(S.w), msg = null;
+    if (stOf(S.w) < PER) S.w++;
+    else if (m < MAP_N) {
+      if (m === S.unlocked) { S.unlocked = m + 1; S.w = m * PER + 1; msg = 'unlock'; }
+      else { S.w = (m - 1) * PER + 1; msg = 'again'; }
+    } else { S.won = true; S.w = (MAP_N - 1) * PER + 1; msg = 'won'; if (S.shears >= MAX_SHEARS && !S.master) { S.master = true; S.skins = SKINS.map(function (x, k) { return k; }); msg = 'master'; } }
+    if (S.w > S.best) S.best = S.w;
+    S.mp[mapOf(S.w) - 1] = stOf(S.w);
+    if (msg === 'unlock') {
+      popBanner('Mapa ' + m + ' dokončena!');
+      showNote('Odemčeno: ' + MAPS[m].e + ' Mapa ' + (m + 1) + ' · ' + MAPS[m].n);
+      setTimeout(function () { sfx('level'); sfx('baa'); }, 500);
+    } else if (msg === 'again') popBanner('Mapa znovu zdolána!');
+    else if (msg === 'master') { popBanner('MASTER! Všechny skiny odemčeny'); showNote('Zlatá ovce a všechny skiny jsou tvoje'); setTimeout(function () { sfx('level'); sfx('baa'); sfx('level'); }, 500); updSkTx(); }
+    else if (msg === 'won') { popBanner('Všechny mapy zdolány!'); setTimeout(function () { sfx('level'); sfx('baa'); }, 500); }
+    return msg;
+  }
+  function popBanner(txt) { var b = $('#banner'); b.textContent = txt; b.classList.remove('go'); void b.offsetWidth; b.classList.add('go'); }
+
+  /* ---------- Aktualizace ---------- */
+  function update(dt) {
+    G.time += dt;
+    var i, p;
+    var easeOut = function (t) { return 1 - Math.pow(1 - t, 3); };
+    if (G.phase === 'walk') {
+      var t0 = G.walkT; G.walkT = Math.min(1, G.walkT + dt / 1.05);
+      var z0 = -27 * (1 - easeOut(t0)), z1 = -27 * (1 - easeOut(G.walkT)), dz = z1 - z0;
+      wall.z = z1; G.dist += dz; scrollProps(dz); hero.ph += dt * 13;
+      if (G.walkT >= 1) { wall.z = 0; G.phase = 'fight'; pickWeak(); }
+    } else if (G.phase === 'fight') {
+      G.cd = Math.max(0, G.cd - dt);
+      if (G.weak) { G.weak.age += dt; if (G.weak.age > (wall.mod === 'quick' ? 1.3 : (wall.enraged ? 2.0 : 2.6)) * (wall.tune ? wall.tune.wk : 1)) pickWeak(); }
+      if (wall.kind === 'boss') updBoss(dt);
+      updBonus(dt);
+      if (wall.mod === 'regen' && G.time - G.lastDmg > 1.2) {
+        var cap = wall.max * wall.alive / wall.total;
+        if (wall.hp < cap) { wall.hp = Math.min(cap, wall.hp + wall.max * 0.04 * dt); updHp(); }
+      }
+      if (G.swing) {
+        G.swing.t += dt;
+        if (!G.swing.done && G.swing.t >= G.swing.hitT) { G.swing.done = true; applyHit(G.swing.P); if (G.phase !== 'fight') return; }
+        if (G.swing.t >= G.swing.dur) G.swing = null;
+      }
+      if (G.buf && G.cd <= 0) { var bf = G.buf; G.buf = null; if (G.time - bf.t < 0.2) swing(bf.x, bf.y); }
+      if (G.combo > 0 && G.time - G.lastHit > COMBO_WINDOW) { G.combo = 0; showCombo(); }
+      if (S.u.dog > 0) {
+        G.dogT += dt;
+        G.dogX = Math.sin(G.time * 1.1) * (wall.W / 2 - 0.2);
+        G.dogBite += dt;
+        if (G.dogBite >= 0.5) {
+          G.dogBite -= 0.5;
+          var dd = dogDps() * 0.5 * (wall.kind === 'boss' ? wall.tune.arm : (wall.mod === 'armor' ? 0.35 : 1));
+          G.lastDmg = G.time;
+          wall.hp -= dd; wall.flash = Math.max(wall.flash, 0.4);
+          spawnSparks(G.dogX, 0.3, planeZ() + 0.3, 2, false);
+          erode(G.dogX, 0.3);
+          if (wall.hp <= 0) { breakWall(); return; }
+          updHp();
+        }
+      }
+    } else if (G.phase === 'dying') {
+      updDying(dt);
+    } else if (G.phase === 'pause') {
+      G.pauseT -= dt;
+      if (G.pauseT <= 0) nextWall();
+    }
+    if (G.phase === 'pause') G.cd = 0;
+    G.hurt = Math.max(0, G.hurt - dt);
+    tickAbil(dt);
+    hero.x += (hero.tx - hero.x) * Math.min(1, dt * 16);
+    if (G.phase !== 'fight') hero.tx += (-1.5 - hero.tx) * Math.min(1, dt * 3);
+    else if (!G.swing && G.time - G.lastSwing > 0.8) hero.tx += (-1.5 - hero.tx) * Math.min(1, dt * 1.6);
+    if (hero.jump > 0 || hero.jumpV > 0) { hero.jumpV -= 22 * dt; hero.jump = Math.max(0, hero.jump + hero.jumpV * dt); if (hero.jump === 0) hero.jumpV = 0; }
+    if (wall) { wall.flash = Math.max(0, wall.flash - dt * 7); wall.shake = Math.max(0, wall.shake - dt * 22); }
+    G.shake = Math.max(0, G.shake - dt * 40);
+    shakeX = G.shake > 0.1 ? (Math.random() - 0.5) * G.shake : 0; shakeY = G.shake > 0.1 ? (Math.random() - 0.5) * G.shake : 0;
+    for (i = debris.length - 1; i >= 0; i--) {
+      p = debris[i]; p.life -= dt;
+      if (p.life <= 0) { debris.splice(i, 1); continue; }
+      p.vy -= 22 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt; p.rx += p.vrx * dt; p.ry += p.vry * dt; p.rz += p.vrz * dt;
+      var fl = p.hy;
+      if (p.y < fl) { p.y = fl; p.vy *= -0.3; p.vx *= 0.6; p.vz *= 0.6; p.vrx *= 0.5; p.vry *= 0.5; p.vrz *= 0.5; if (Math.abs(p.vy) < 1) p.vy = 0; }
+    }
+    for (i = sparks.length - 1; i >= 0; i--) {
+      p = sparks[i]; p.life -= dt; if (p.life <= 0) { sparks.splice(i, 1); continue; }
+      p.vy -= 14 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt; if (p.y < 0.02) { p.y = 0.02; p.vy = 0; }
+    }
+    for (i = fires.length - 1; i >= 0; i--) { p = fires[i]; p.age += dt; if (p.age >= p.life) { fires.splice(i, 1); continue; } p.y += p.vy * dt; }
+    flashW = Math.max(0, flashW - dt * 2.2);
+    for (i = dusts.length - 1; i >= 0; i--) { p = dusts[i]; p.life -= dt; if (p.life <= 0) { dusts.splice(i, 1); continue; } p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt; p.r += dt * 0.6; }
+    for (i = rings.length - 1; i >= 0; i--) { rings[i].t += dt; if (rings[i].t > 0.3) rings.splice(i, 1); }
+    for (i = texts.length - 1; i >= 0; i--) { p = texts[i]; p.life -= dt; p.y += p.vy * dt; p.vy *= 0.96; if (p.life <= 0) texts.splice(i, 1); }
+    var tz = layoutCamera();
+    cam.z += (tz - cam.z) * Math.min(1, dt * 3);
+    var idleSway = G.phase === 'fight' && !RM ? Math.sin(G.time * 0.5) * 0.35 : 0;
+    cam.x += ((0.7 + idleSway) - cam.x) * Math.min(1, dt * 2);
+    var tyT = wall ? Math.max(1.35, Math.min(2.5, wall.Hh * 0.5)) : 1.35, cyT = 3.05 + (tyT - 1.35) * 0.75;
+    cam.y += (cyT - cam.y) * Math.min(1, dt * 3); cam.tz = 0; cam.ty += (tyT - cam.ty) * Math.min(1, dt * 3);
+    $('#cdfill').style.width = (G.cdMax > 0 ? (1 - Math.min(1, G.cd / G.cdMax)) * 100 : 100) + '%';
+  }
+  function scrollProps(dz) {
+    for (var i = 0; i < props.length; i++) {
+      var p = props[i]; p.z += dz;
+      var depth = p.dp || 0.5;
+      if (p.z - depth > 9) p.z -= 96;
+    }
+  }
+
+  /* ---------- Vykreslení ---------- */
+  function drawBackdrop() {
+    var pal = worldPal(), i;
+    camUpdate();
+    proj(0, 0, -400); horizonY = Math.max(10, Math.min(H - 10, pr.y));
+    var g = ctx.createLinearGradient(0, 0, 0, horizonY);
+    g.addColorStop(0, css(pal.sky[0], 1)); g.addColorStop(0.62, css(pal.sky[1], 1)); g.addColorStop(1, css(pal.sky[2], 1));
+    ctx.fillStyle = g; ctx.fillRect(-20, -20, W + 40, horizonY + 22);
+    if (pal.stars) {
+      ctx.fillStyle = '#fff';
+      for (i = 0; i < STARS.length; i++) { var st = STARS[i]; ctx.globalAlpha = st[2] * (0.75 + 0.25 * Math.sin(G.time * 2 + i)); ctx.fillRect(st[0] * W, st[1] * horizonY * 0.8, st[3], st[3]); }
+      ctx.globalAlpha = 1;
+    }
+    if (pal.sun) {
+      var su = pal.sun, sxp = W * su[0], syp = horizonY * su[1], sr = su[2] * Math.min(W, H);
+      var sg = ctx.createRadialGradient(sxp, syp, 0, sxp, syp, sr * 3);
+      sg.addColorStop(0, 'rgba(' + su[3] + ',.55)'); sg.addColorStop(1, 'rgba(' + su[3] + ',0)');
+      ctx.fillStyle = sg; ctx.fillRect(sxp - sr * 3, syp - sr * 3, sr * 6, sr * 6);
+      ctx.fillStyle = 'rgb(' + su[3] + ')'; ctx.beginPath(); ctx.arc(sxp, syp, sr, 0, 6.2832); ctx.fill();
+    }
+    // daleká silueta: město, hory nebo duny
+    var sk = skyline, P = sk.P, scroll = (G.dist * 0.6) % P;
+    ctx.fillStyle = pal.fc;
+    for (i = 0; i < sk.far.length; i++) {
+      var b = sk.far[i], bx = (((b.x - scroll) % P) + P) % P - 60;
+      if (bx + b.w < 0 || bx > W) continue;
+      if (pal.far === 'hills') { ctx.beginPath(); ctx.moveTo(bx - 10, horizonY + 1); ctx.lineTo(bx + b.w / 2, horizonY - b.h * H * 1.7); ctx.lineTo(bx + b.w + 10, horizonY + 1); ctx.closePath(); ctx.fill(); }
+      else if (pal.far === 'dunes') { ctx.beginPath(); ctx.ellipse(bx + b.w / 2, horizonY + 2, b.w * 0.9, b.h * H * 0.9, 0, Math.PI, 6.2832); ctx.fill(); }
+      else ctx.fillRect(bx, horizonY - b.h * H, b.w, b.h * H + 1);
+    }
+    // země
+    ctx.fillStyle = css(fogMix(pal.ground, 70), 1); ctx.fillRect(-20, horizonY, W + 40, H - horizonY + 20);
+    function quad(x0, x1, z0, z1, rgb, a) {
+      var q = [], ok = true, pts = [[x0, z0], [x1, z0], [x1, z1], [x0, z1]];
+      for (var k = 0; k < 4; k++) { if (!proj(pts[k][0], 0, pts[k][1])) { ok = false; break; } q.push(pr.x, pr.y); }
+      if (!ok) return;
+      ctx.fillStyle = typeof rgb === 'string' ? rgb : css(rgb, 1);
+      if (a !== undefined) ctx.globalAlpha = a;
+      ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[2], q[3]); ctx.lineTo(q[4], q[5]); ctx.lineTo(q[6], q[7]); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    var zn = cam.z - 0.3, zf = -180, ed = pal.edge;
+    quad(-60, 60, zn, zf, fogMix(pal.ground, 25));
+    quad(-3.6, 3.6, zn, zf, pal.road);
+    quad(-3.75, -3.6, zn, zf, ed); quad(3.6, 3.75, zn, zf, ed);
+    var off = ((G.dist % 3.2) + 3.2) % 3.2, zz;
+    for (zz = zn + 3.2 - off; zz > -70; zz -= 3.2) quad(-0.07, 0.07, zz, zz - 1.5, [214, 205, 172], 0.8);
+    for (zz = zn + 3.2 - off; zz > -70; zz -= 3.2) { quad(-3.35, -3.2, zz, zz - 0.8, ed, 0.5); quad(3.2, 3.35, zz, zz - 0.8, ed, 0.5); }
+    var hz = ctx.createLinearGradient(0, horizonY - 14, 0, horizonY + H * 0.2);
+    var fc = pal.sky[2];
+    hz.addColorStop(0, 'rgba(' + fc[0] + ',' + fc[1] + ',' + fc[2] + ',0)'); hz.addColorStop(0.28, 'rgba(' + fc[0] + ',' + fc[1] + ',' + fc[2] + ',.55)'); hz.addColorStop(1, 'rgba(' + fc[0] + ',' + fc[1] + ',' + fc[2] + ',0)');
+    ctx.fillStyle = hz; ctx.fillRect(-20, horizonY - 14, W + 40, H * 0.2 + 14);
+    if (wall && wall.boss && wall.alive > 0 && proj(0, wall.Hh / 2, wall.z)) {
+      var rr = wall.W * cam.f / pr.z * 0.8, gg = ctx.createRadialGradient(pr.x, pr.y, 0, pr.x, pr.y, rr);
+      gg.addColorStop(0, 'rgba(216,64,42,.5)'); gg.addColorStop(1, 'rgba(216,64,42,0)');
+      ctx.fillStyle = gg; ctx.fillRect(pr.x - rr, pr.y - rr, rr * 2, rr * 2);
+    }
+  }
+
+  function buildScene() {
+    items.length = 0;
+    var i, p, b;
+    // rekvizity podle motivu mapy
+    for (i = 0; i < props.length; i++) { p = props[i]; if (p.z > 8.5 || p.z < -95) continue; drawProp(p); }
+    if (wall) {
+      var sx = wall.shake ? rnd(-wall.shake, wall.shake) * 0.012 : 0;
+      for (i = 0; i < wall.bricks.length; i++) {
+        b = wall.bricks[i]; if (!b.alive) continue;
+        addBox(b.x + sx, b.y, wall.z, wall.bw / 2 - 0.012, wall.bh / 2 - 0.012, 0.25, AX, AY, AZ, b.rgb, { lift: wall.flash * 0.3 });
+        if (b.tnt) addSphere(b.x + sx, b.y + wall.bh / 2 + 0.07, wall.z + 0.1, 0.05, [255, 170, 50], { outline: false, lift: 0.5, bias: -0.6 });
+      }
+      if (wall.alive > 0) addShadow(0, wall.z + 0.1, wall.W * 0.62, 0.3);
+      if (wall.kind === 'boss' && wall.alive > 0) buildBoss();
+      if (G.phase === 'fight' && G.weak && G.weak.b.alive) {
+        var wb = G.weak.b;
+        if (proj(wb.x, wb.y, planeZ() + 0.04)) {
+          var wd = dist2cam(wb.x, wb.y, wall.z) - 1.2;
+          items.push({ d: wd, t: 'weak', x: pr.x, y: pr.y, r: 0.3 * cam.f / pr.z });
+        }
+      }
+    }
+    for (i = 0; i < debris.length; i++) {
+      p = debris[i]; var axs = rotAxes(p.rx, p.ry, p.rz);
+      addBox(p.x, p.y, p.z, p.hx, p.hy, p.hz, axs[0], axs[1], axs[2], p.rgb, {});
+      if (p.y < 1.2) addShadow(p.x, p.z, 0.3, 0.2);
+    }
+    for (i = 0; i < fires.length; i++) { p = fires[i]; if (proj(p.x, p.y, p.z)) items.push({ d: dist2cam(p.x, p.y, p.z) - 1.5, t: 'f', x: pr.x, y: pr.y, r: Math.max(4, p.r * cam.f / pr.z * (0.6 + 0.9 * p.age / p.life)), k: p.age / p.life }); }
+    for (i = 0; i < sparks.length; i++) { p = sparks[i]; addDot(p.x, p.y, p.z, p.s, p.col, Math.min(1, p.life / 0.2), -0.5); }
+    for (i = 0; i < dusts.length; i++) {
+      p = dusts[i]; if (!proj(p.x, p.y, p.z)) continue;
+      items.push({ d: dist2cam(p.x, p.y, p.z), t: 'c', x: pr.x, y: pr.y, r: p.r * cam.f / pr.z, col: 'rgb(214,205,190)', a: 0.5 * Math.max(0, p.life / p.max) });
+    }
+    for (i = 0; i < rings.length; i++) {
+      p = rings[i]; if (!proj(p.x, p.y, p.z)) continue;
+      var k = p.t / 0.3;
+      items.push({ d: dist2cam(p.x, p.y, p.z) - 1.4, t: 'r', x: pr.x, y: pr.y, r: (0.15 + k * (p.weak ? 0.9 : 0.55)) * cam.f / pr.z, col: p.weak ? '#ffb02e' : '#fff', a: 1 - k, lw: Math.max(1.5, 4 * (1 - k)) });
+    }
+    buildSheep();
+    buildBonus();
+    if (S.u.dog > 0 && G.phase === 'fight') buildDog();
+    items.sort(function (a, b2) { return b2.d - a.d; });
+  }
+
+  function buildSheep() {
+    var K = 1.15, gx = hero.x, gz = hero.z, j = hero.jump, SKN = SKINS[S.skin] || SKINS[0], WOOL = SKN.w, HIDE = SKN.h, HELM = SKN.helm || HELM0;
+    var walking = G.phase === 'walk', t = G.time;
+    var bob = walking ? Math.abs(Math.sin(hero.ph * 2)) * 0.07 : Math.sin(t * 3) * 0.02;
+    var sw = G.swing, lunge = 0;
+    if (sw) { var u = sw.t / sw.dur; lunge = u < 0.35 ? u / 0.35 : Math.max(0, 1 - (u - 0.35) / 0.65); }
+    gz -= lunge * 0.3;
+    var oy = j + bob;
+    function sph(dx, dy, dz, r, rgb, o) { addSphere(gx + dx * K, dy * K + oy, gz + dz * K, r * K, rgb, o); }
+    function box(dx, dy, dz, hx, hy, hz, ax, ay, az, rgb, o) { addBox(gx + dx * K, dy * K + oy, gz + dz * K, hx * K, hy * K, hz * K, ax, ay, az, rgb, o); }
+    addShadow(gx, gz, 0.7 * K, 0.36 - Math.min(0.22, j * 0.3));
+    // nohy
+    var s1 = walking ? Math.sin(hero.ph) * 0.7 : 0.08, s2 = -s1, i;
+    var legs = [[-0.2, -0.2, s1], [0.2, -0.2, s2], [-0.2, 0.22, s2], [0.2, 0.22, s1]];
+    for (i = 0; i < 4; i++) {
+      var L = legs[i], dir = [0, -Math.cos(L[2]), Math.sin(L[2]) * (i < 2 ? -1 : 1)];
+      addLimb(gx + L[0] * K, 0.46 * K + oy, gz + L[1] * K, dir, 0.42 * K, 0.075 * K, HIDE, { outline: 0.5 });
+      addBox(gx + L[0] * K, Math.max(0.05, 0.05 * K + oy * 0.5), gz + L[1] * K + dir[2] * 0.42 * K, 0.09 * K, 0.045 * K, 0.115 * K, AX, AY, AZ, INK, { outline: 0 });
+    }
+    // tělo z vlněných koulí
+    var cy = 0.84;
+    var puffs = [[0, 0, 0.25, 0.42], [-0.26, 0.02, -0.02, 0.36], [0.27, 0.02, -0.02, 0.36], [0, 0.22, -0.02, 0.38], [0, -0.04, -0.3, 0.34], [-0.18, 0.12, 0.28, 0.3], [0.2, 0.1, 0.28, 0.3], [0, 0.1, 0.46, 0.22]];
+    for (i = 0; i < puffs.length; i++) { var q = puffs[i]; sph(q[0], cy + q[1], q[2], q[3], SKN.fx === 'rainbow' ? hsl2rgb((t * 60 + i * 45) % 360, 80, 62) : WOOL, { lift: SKN.fx === 'gold' ? 0.3 : 0.1 }); }
+    sph(0, cy + 0.05, 0.62, 0.14, WOOL, { lift: 0.1 });
+    // hlava s tváří otočenou k hráči
+    var hyaw = sw ? 2.3 : 2.85;
+    var hf = [Math.sin(hyaw), 0, -Math.cos(hyaw)], hr = [Math.cos(hyaw), 0, Math.sin(hyaw)];
+    var hx = 0.1, hy = cy + 0.72, hz = -0.12;
+    sph(hx, hy, hz, 0.3, HIDE, { sy: 1.1 });
+    sph(hx + hf[0] * 0.2, hy - 0.1, hz + hf[2] * 0.2, 0.17, [112, 94, 80], { bias: -0.3 });
+    sph(hx + hf[0] * 0.34, hy - 0.08, hz + hf[2] * 0.34, 0.05, INK, { outline: false, bias: -0.5 });
+    for (i = -1; i <= 1; i += 2) {
+      var ex = hx + hf[0] * 0.22 + hr[0] * 0.13 * i, ez = hz + hf[2] * 0.22 + hr[2] * 0.13 * i;
+      sph(ex, hy + 0.07, ez, 0.085, [255, 255, 255], { bias: -0.4 });
+      sph(ex + hf[0] * 0.05, hy + 0.07, ez + hf[2] * 0.05, 0.045, INK, { outline: false, bias: -0.5 });
+      sph(hx + hr[0] * 0.34 * i, hy + 0.02, hz + hr[2] * 0.34 * i, 0.12, HIDE, { sx: 1.5, sy: 0.65, bias: 0.1 });
+    }
+    // přilba
+    sph(hx, hy + 0.24, hz, 0.29, HELM, { sy: 0.78, bias: -0.6 });
+    box(hx, hy + 0.17, hz, 0.4, 0.028, 0.4, AX, AY, AZ, HELM, { outline: 0.5 });
+    // paže s kladivem (míří na zasažené místo)
+    var tgtY = sw ? sw.P.y : 1.4, rest = 1.9, psi;
+    var pvx = gx + 0.5, pvy = (cy + 0.2) * K + oy, pvz = gz - 0.1 * K, HL = 1.15 * K;
+    var hit = Math.asin(Math.max(-0.6, Math.min(0.95, (tgtY - pvy) / HL)));
+    if (!sw) psi = rest + Math.sin(t * 2.4) * 0.04;
+    else {
+      var tt = sw.t, ht = sw.hitT;
+      if (tt < ht) { var a0 = tt / ht; psi = rest + (hit - rest) * a0 * a0; }
+      else { var a1 = Math.min(1, (tt - ht) / Math.max(0.05, sw.dur - ht)); psi = hit + (rest - hit) * (1 - (1 - a1) * (1 - a1)); }
+    }
+    if (G.hurt > 0) psi = 3.05;
+    var dv = [0, Math.sin(psi), -Math.cos(psi)], ax = [1, 0, 0], az = cross3(ax, dv);
+    addBox(pvx + dv[0] * HL * 0.5, pvy + dv[1] * HL * 0.5, pvz + dv[2] * HL * 0.5, 0.05 * K, HL * 0.5, 0.05 * K, ax, dv, az, WOOD, { outline: 0.5 });
+    addBox(pvx + dv[0] * HL, pvy + dv[1] * HL, pvz + dv[2] * HL, 0.32 * K, 0.16 * K, 0.16 * K, ax, dv, az, METAL, { outline: 0.55 });
+    addBox(pvx + dv[0] * 0.08, pvy + dv[1] * 0.08, pvz + dv[2] * 0.08, 0.11 * K, 0.11 * K, 0.11 * K, ax, dv, az, HIDE, { outline: 0.5 });
+    if (SKN.fx === 'gold') {
+      box(hx, hy + 0.46, hz, 0.22, 0.05, 0.22, AX, AY, AZ, [255, 214, 70], { outline: 0.5 });
+      for (i = -1; i <= 1; i++) box(hx + i * 0.14, hy + 0.56, hz, 0.035, 0.08, 0.035, AX, AY, AZ, [255, 214, 70], { outline: 0.4 });
+    }
+    if (SKN.fx === 'spark' || SKN.fx === 'gold') for (i = 0; i < 6; i++) { var sa = t * 1.6 + i * 1.047; addDot(gx + Math.cos(sa) * 0.75 * K, (0.5 + ((t * 0.5 + i * 0.37) % 1.4)) * K + oy, gz + Math.sin(sa) * 0.6 * K, 0.07, SKN.fx === 'gold' ? '#ffe27a' : '#ffffff', 0.55 + 0.4 * Math.sin(t * 5 + i), -1); }
+    if (G.hurt > 0) for (i = 0; i < 3; i++) { var an = t * 8 + i * 2.094; addDot(gx + (hx + Math.cos(an) * 0.4) * K, (hy + 0.62) * K + oy, gz + (hz + Math.sin(an) * 0.4) * K, 0.1, '#ffe27a', 1, -1); }
+  }
+  function buildDog() {
+    var x = G.dogX, z = planeZ() + 0.75 + Math.sin(G.time * 2) * 0.05, dir = Math.cos(G.time * 1.1) >= 0 ? 1 : -1;
+    var run = Math.sin(G.time * 18) * 0.5, bobY = Math.abs(Math.sin(G.time * 18)) * 0.05;
+    var col = [186, 128, 66], dk = [120, 78, 40];
+    addShadow(x, z, 0.4, 0.28);
+    // pes běží podél zdi (osa x)
+    var ax = [dir, 0, 0];
+    addBox(x, 0.34 + bobY, z, 0.3, 0.13, 0.12, [1, 0, 0], AY, AZ, col, { outline: 0.5 });
+    addSphere(x + dir * 0.34, 0.46 + bobY, z, 0.12, col, {});
+    addBox(x + dir * 0.45, 0.43 + bobY, z, 0.06, 0.04, 0.05, [1, 0, 0], AY, AZ, dk, { outline: 0.4 });
+    addSphere(x + dir * 0.3, 0.55 + bobY, z + 0.09, 0.05, dk, { sy: 1.5 });
+    addSphere(x + dir * 0.3, 0.55 + bobY, z - 0.09, 0.05, dk, { sy: 1.5 });
+    addLimb(x - dir * 0.3, 0.4 + bobY, z, [-dir * 0.5, 0.8, 0], 0.22, 0.03, dk, { outline: 0.4 });
+    var offs = [[0.2, 0.09, run], [0.2, -0.09, -run], [-0.2, 0.09, -run], [-0.2, -0.09, run]];
+    for (var i = 0; i < 4; i++) { var o = offs[i]; addLimb(x + dir * o[0], 0.26 + bobY, z + o[1], [o[2] * dir, -1, 0], 0.26, 0.035, dk, { outline: 0.4 }); }
+  }
+
+  function drawTexts() {
+    ctx.textAlign = 'center'; ctx.lineJoin = 'round';
+    for (var i = 0; i < texts.length; i++) {
+      var t = texts[i];
+      ctx.globalAlpha = Math.min(1, t.life / 0.3);
+      ctx.font = '800 ' + t.size + 'px "Big Shoulders Display", Impact, "Arial Narrow", sans-serif';
+      ctx.lineWidth = 4; ctx.strokeStyle = '#1c1a17'; ctx.strokeText(t.text, t.x, t.y);
+      ctx.fillStyle = t.c; ctx.fillText(t.text, t.x, t.y);
+    }
+    ctx.globalAlpha = 1;
+  }
+  function draw() {
+    ctx.save();
+    ctx.clearRect(0, 0, W, H);
+    ctx.translate(shakeX, shakeY);
+    drawBackdrop();
+    buildScene();
+    for (var i = 0; i < items.length; i++) drawItem(items[i]);
+    drawTexts();
+    ctx.restore();
+    if (flashW > 0) { ctx.fillStyle = 'rgba(255,246,220,' + Math.min(0.95, flashW) + ')'; ctx.fillRect(0, 0, W, H); }
+    if (wall && wall.kind === 'boss' && wall.atk.state === 'tele') {
+      ctx.strokeStyle = 'rgba(255,40,30,' + (0.35 + 0.25 * Math.sin(G.time * 16)) + ')'; ctx.lineWidth = 10; ctx.strokeRect(0, 0, W, H);
+    }
+  }
+  function resize() {
+    var rc = stage.getBoundingClientRect();
+    W = Math.max(200, rc.width); H = Math.max(160, rc.height);
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    camUpdate();
+    if (wall) cam.z = layoutCamera();
+  }
+
+  /* =========================================================
+     Rozhraní
+     ========================================================= */
+  var refs = {}, cache = {};
+  function setText(id, v) { if (cache[id] !== v) { cache[id] = v; $('#' + id).textContent = v; } }
+  function updTop() {
+    var need = ECON.xpNeed(S.L);
+    setText('lvl', S.L.toLocaleString('cs-CZ'));
+    setText('title', titleOf(S.L));
+    setText('xptx', fmt(Math.floor(S.xp)) + ' / ' + fmt(need) + ' XP');
+    setText('gold', fmt(S.gold));
+    var pct = Math.max(0, Math.min(100, S.xp / need * 100));
+    $('#xpfill').style.width = pct + '%'; $('#xpbar').setAttribute('aria-valuenow', Math.round(pct));
+    setText('rec', 'Rekord: mapa ' + mapOf(S.best) + ' · zeď ' + stOf(S.best));
+  }
+  function updWall() {
+    var M = MAPS[mapOf(wall.n) - 1], st = stOf(wall.n);
+    $('#wallbar').classList.toggle('boss', wall.boss);
+    if (wall.kind === 'boss') { setText('wname', (wall.fin ? 'Finále ' : 'Boss ') + st + '/' + PER); setText('wmat', wall.name); }
+    else { setText('wname', 'Zeď ' + st + '/' + PER); setText('wmat', wallName(wall) + (wall.mod ? ' · ' + MODS[wall.mod].name : '')); }
+    setText('mapBtn', M.e + ' Mapa ' + mapOf(wall.n) + ' · ' + M.n);
+    updHp();
+  }
+  function updHp() {
+    var frac = Math.max(0, Math.min(1, wall.hp / wall.max));
+    $('#hpfill').style.width = (frac * 100) + '%'; $('#hpbar').setAttribute('aria-valuenow', Math.round(frac * 100));
+    setText('hpt', fmt(Math.max(0, wall.hp)) + ' / ' + fmt(wall.max));
+  }
+  function buildShop() {
+    var host = $('#ups');
+    UPS.forEach(function (k) {
+      var row = document.createElement('div'); row.className = 'up';
+      row.innerHTML = '<div class="ic">' + ICON[k] + '</div>' +
+        '<div class="tx"><div class="nm">' + UP[k].name + '<span class="lv"></span></div><div class="ef"></div></div>' +
+        '<button class="buy" type="button" data-k="' + k + '"><span class="bq"></span><span class="bc"><i class="coin"></i><span class="bv"></span></span></button>';
+      host.appendChild(row);
+      refs[k] = { lv: row.querySelector('.lv'), ef: row.querySelector('.ef'), btn: row.querySelector('.buy'), bq: row.querySelector('.bq'), bv: row.querySelector('.bv'), bc: row.querySelector('.bc') };
+    });
+  }
+  function updShop() {
+    UPS.forEach(function (k) {
+      var n = S.u[k], q = qty(k), R = refs[k];
+      R.lv.textContent = 'Lv ' + n;
+      if (q < 1) {
+        R.ef.textContent = UP[k].fx(n, n);
+        R.bq.textContent = 'MAX'; R.bc.hidden = true;
+        R.btn.className = 'buy maxed'; R.btn.setAttribute('aria-disabled', 'true');
+        return;
+      }
+      var cost = sumCost(k, n, q), can = S.gold >= cost;
+      R.bc.hidden = false;
+      R.ef.textContent = UP[k].fx(n, n + q);
+      R.bq.textContent = (S.mode === 0 ? 'MAX +' : '+') + q;
+      R.bv.textContent = fmt(cost);
+      R.btn.classList.remove('maxed'); R.btn.classList.toggle('can', can);
+      R.btn.setAttribute('aria-disabled', String(!can));
+    });
+    var wl = S.wool > 0 ? ' · vlna <b>' + S.wool + '</b> (×' + fmt(woolMult()) + ')' : '';
+    $('#stats').innerHTML = 'Úder <b>' + fmt(dmgBase()) + '</b> · slabina <b>×' + fmt(weakMult()) + '</b> · švih <b>' + fmt(swingCdOf(S.u.spd)) + ' s</b>' + (S.u.dog > 0 ? ' · pes <b>' + fmt(dogDps()) + '/s</b>' : '') + wl;
+    $('#sndSel').value = S.pack;
+    document.querySelectorAll('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.dataset.m === S.mode)); });
+    var doneHere = S.shm.indexOf(mapOf(S.w)) >= 0, gain = (S.shears >= MAX_SHEARS || doneHere) ? 0 : shearGain(), sb = $('#shearBtn');
+    if (!sb.classList.contains('arm')) {
+      $('#shearTx').textContent = S.shears >= MAX_SHEARS ? 'Maximum: ' + MAX_SHEARS + '× ostříháno' : doneHere ? 'V téhle mapě už jsi ostříhal. Jdi do vyšší mapy.' : gain > 0 ? 'Restart (mapy se zavřou) + bedna se skinem. Vlna +' + gain + ' = +20 % síly i zlata' : 'Od zdi 15. Restart za trvalý bonus';
+      sb.firstElementChild.textContent = 'Ostříhat vlnu';
+    }
+    sb.classList.toggle('ready', gain > 0); sb.setAttribute('aria-disabled', String(gain < 1));
+    updSkTx();
+  }
+  function buy(k) {
+    var n = S.u[k], q = qty(k), R = refs[k];
+    if (q < 1) return;
+    var cost = sumCost(k, n, q);
+    if (S.gold < cost) { R.btn.classList.remove('nope'); void R.btn.offsetWidth; R.btn.classList.add('nope'); return; }
+    S.gold -= cost; S.u[k] = n + q;
+    sfx('buy');
+    updTop(); updShop(); save();
+  }
+  function resetRun(keep) {
+    var f = freshState();
+    f.pack = S.pack; f.mode = S.mode; f.best = S.best; f.weakHits = S.weakHits; f.wool = keep.wool;
+    f.name = S.name; f.shears = S.shears + (keep.shear ? 1 : 0); f.skins = S.skins; f.skin = S.skin; f.master = S.master; f.shm = S.shm; f.crates = S.crates + (keep.shear ? 1 : 0); f.maxL = Math.max(S.maxL, S.L);
+    if (keep.unlock) { f.unlocked = S.unlocked; f.won = S.won; }
+    S = f;
+    debris.length = 0; sparks.length = 0; dusts.length = 0; rings.length = 0; texts.length = 0; fires.length = 0; flashW = 0; tsT = 0;
+    AB.cd = [0, 0, 0]; AB.rage = 0; AB.shield = 0;
+    G.world = 0; G.hurt = 0; bonus = null; G.combo = 0; G.swing = null; G.buf = null; G.cd = 0; showCombo();
+    applyWorld(); nextWall(); updTop(); updShop(); save();
+  }
+
+  /* =========================================================
+     Vstupy
+     ========================================================= */
+  stage.addEventListener('pointerdown', function (e) { e.preventDefault(); tap(e.clientX, e.clientY); });
+  stage.addEventListener('keydown', function (e) {
+    if (e.code === 'Space' || e.key === 'Enter') {
+      e.preventDefault();
+      var rc = stage.getBoundingClientRect();
+      tap(rc.left + rc.width * rnd(0.35, 0.65), rc.top + rc.height * rnd(0.35, 0.6));
+    }
+  });
+  $('#ups').addEventListener('click', function (e) { var b = e.target.closest('.buy'); if (b) buy(b.dataset.k); });
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () { S.mode = +b.dataset.m; updShop(); save(); });
+  });
+  $('#sndSel').addEventListener('change', function () {
+    S.pack = this.value; save();
+    if (S.pack !== 'off') { audio(); sfx('buy'); setTimeout(function () { sfx('weak'); }, 220); setTimeout(function () { sfx('baa'); }, 520); }
+  });
+  var rstTimer = 0, shTimer = 0;
+  $('#rstBtn').addEventListener('click', function () {
+    var btn = $('#rstBtn');
+    if (!rstTimer) {
+      btn.textContent = 'Opravdu smazat vše? Klepni znovu';
+      rstTimer = setTimeout(function () { rstTimer = 0; btn.textContent = 'Smazat postup'; }, 3500);
+      return;
+    }
+    clearTimeout(rstTimer); rstTimer = 0; btn.textContent = 'Smazat postup';
+    S.best = 1; S.shears = 0; S.maxL = 1; S.shm = []; resetRun({ wool: 0, unlock: false });
+    syncBoard(true);
+  });
+  $('#shearBtn').addEventListener('click', function () {
+    var sb = $('#shearBtn'), gain = shearGain();
+    if (gain < 1 || S.shears >= MAX_SHEARS || S.shm.indexOf(mapOf(S.w)) >= 0) return;
+    if (!shTimer) {
+      sb.classList.add('arm'); sb.firstElementChild.textContent = 'Opravdu ostříhat?';
+      $('#shearTx').textContent = 'Klepni znovu: zlaťáky, levely i vylepšení se vynulují';
+      shTimer = setTimeout(function () { shTimer = 0; sb.classList.remove('arm'); updShop(); }, 4000);
+      return;
+    }
+    clearTimeout(shTimer); shTimer = 0; sb.classList.remove('arm');
+    var w = S.wool + gain; S.shm.push(mapOf(S.w));
+    resetRun({ wool: w, unlock: false, shear: true });
+    setTimeout(function () { openSkins(true); }, 700);
+    popBanner('Ostříhána! Vlna ' + w);
+    sfx('baa');
+  });
+  /* ---------- Skiny a bedny ---------- */
+  var MAX_SHEARS = 20, GOLD_CHANCE = 0.0001;
+  var RN = { c: 'Běžný', u: 'Neobvyklý', r: 'Vzácný', e: 'Epický', l: 'Legendární' };
+  function SK(n, r, w, h, helm, fx) { return { n: n, r: r, w: w, h: h, helm: helm || null, fx: fx || null }; }
+  var SKINS = [
+    SK('Klasická ovce', 'c', [246, 243, 236], [58, 50, 44]),
+    SK('Uhlová', 'c', [96, 98, 104], [30, 28, 28]),
+    SK('Karamelová', 'c', [214, 170, 112], [92, 62, 40]),
+    SK('Jahodová', 'c', [248, 176, 196], [90, 52, 60]),
+    SK('Mátová', 'c', [184, 238, 206], [52, 74, 62]),
+    SK('Nebeská', 'c', [176, 212, 246], [50, 62, 86]),
+    SK('Citronová', 'c', [250, 238, 160], [96, 82, 40]),
+    SK('Fialová', 'u', [182, 140, 226], [54, 40, 80], [255, 214, 90]),
+    SK('Pomerančová', 'u', [250, 164, 80], [92, 52, 28], [60, 60, 66]),
+    SK('Tyrkysová', 'u', [80, 206, 214], [30, 66, 72], [250, 230, 120]),
+    SK('Rudá', 'u', [214, 70, 66], [70, 28, 28], [242, 232, 220]),
+    SK('Lesní', 'u', [96, 160, 98], [40, 62, 40], [190, 140, 70]),
+    SK('Noční', 'u', [52, 62, 110], [190, 196, 214], [245, 245, 255]),
+    SK('Duhová', 'r', [255, 255, 255], [58, 50, 44], null, 'rainbow'),
+    SK('Ledová', 'r', [214, 242, 255], [90, 130, 160], [150, 210, 245], 'spark'),
+    SK('Lávová', 'r', [255, 120, 50], [60, 24, 20], [255, 214, 80], 'spark'),
+    SK('Vesmírná', 'r', [70, 48, 130], [24, 18, 48], [140, 220, 255], 'spark'),
+    SK('Diamantová', 'e', [200, 250, 255], [60, 150, 170], [255, 255, 255], 'spark'),
+    SK('Stříbrná', 'e', [214, 220, 228], [96, 104, 116], [255, 255, 255], 'spark'),
+    SK('Neonová', 'e', [255, 80, 200], [30, 20, 50], [90, 255, 220], 'spark'),
+    SK('Zlatá ovce', 'l', [255, 208, 70], [140, 96, 20], [255, 240, 150], 'gold')
+  ];
+  function skinCss(k) {
+    var x = SKINS[k], c = function (a) { return 'rgb(' + a[0] + ',' + a[1] + ',' + a[2] + ')'; };
+    return 'background:' + c(x.w) + ';--hide:' + c(x.h) + ';--helm:' + c(x.helm || HELM);
+  }
+  function rollCrate() {
+    if (Math.random() < GOLD_CHANCE) return 20;
+    var q = Math.random(), tier = q < 0.6 ? 'c' : q < 0.88 ? 'u' : q < 0.97 ? 'r' : 'e';
+    var pool = []; SKINS.forEach(function (x, k) { if (x.r === tier && k !== 0) pool.push(k); });
+    return pool[(Math.random() * pool.length) | 0];
+  }
+  function updSkTx() {
+    var t = $('#skTx'); if (!t) return;
+    t.textContent = S.crates > 0 ? 'Bedny k otevření: ' + S.crates : 'Máš ' + S.skins.length + ' z ' + SKINS.length;
+    $('#skBtn').classList.toggle('has', S.crates > 0);
+  }
+  function renderSkins(reveal) {
+    var box = $('#crateBox'), g = $('#skg'); box.textContent = ''; g.textContent = '';
+    $('#skinsSub').textContent = 'Máš ' + S.skins.length + ' z ' + SKINS.length + (S.master ? ' · MASTER' : ' · bedna z každého ostříhání');
+    if (reveal) {
+      var rv = document.createElement('div'); rv.className = 'crate';
+      var x = SKINS[reveal.k];
+      rv.innerHTML = '<span class="bx" aria-hidden="true">🎁</span><div class="sk r-' + x.r + '" style="display:inline-flex;cursor:default"><span class="sw" style="' + skinCss(reveal.k) + '"></span><b></b><small></small></div><p></p>';
+      rv.querySelector('b').textContent = x.n; rv.querySelector('small').textContent = RN[x.r];
+      rv.querySelector('p').textContent = reveal.dup ? 'Tenhle skin už máš.' : (reveal.k === 20 ? 'ZLATÁ OVCE! Šance byla 0,01 %.' : 'Nový skin! Hned ho máš na sobě.');
+      box.appendChild(rv);
+    }
+    if (S.crates > 0) {
+      var cr = document.createElement('div'); cr.className = 'crate';
+      cr.innerHTML = '<span class="bx" id="bx" aria-hidden="true">📦</span><button type="button" id="openCrate"></button>';
+      cr.querySelector('#openCrate').textContent = 'Otevřít bednu (' + S.crates + ')';
+      box.appendChild(cr);
+      cr.querySelector('#openCrate').addEventListener('click', function () {
+        var btn = this; btn.disabled = true; $('#bx').classList.add('shk'); sfx('slam');
+        setTimeout(function () {
+          var k = rollCrate(), dup = S.skins.indexOf(k) >= 0;
+          S.crates--; if (!dup) { S.skins.push(k); S.skin = k; }
+          save(); updSkTx(); sfx(k === 20 ? 'level' : (SKINS[k].r === 'c' ? 'gold' : 'level')); if (k === 20) sfx('baa');
+          renderSkins({ k: k, dup: dup });
+        }, 800);
+      });
+    }
+    SKINS.forEach(function (x, k) {
+      var own = S.skins.indexOf(k) >= 0, b = document.createElement('button'); b.type = 'button';
+      b.className = 'sk r-' + x.r + (own ? '' : ' lock'); b.dataset.k = k; b.setAttribute('aria-pressed', String(own && S.skin === k));
+      b.innerHTML = '<span class="sw"></span><b></b><small></small>';
+      if (own) b.querySelector('.sw').setAttribute('style', skinCss(k)); else b.querySelector('.sw').style.background = '#bbb';
+      b.querySelector('b').textContent = own ? x.n : '???'; b.querySelector('small').textContent = RN[x.r];
+      g.appendChild(b);
+    });
+  }
+  function openSkins(fromShear) {
+    audio(); G.paused = true; renderSkins(null); $('#skins').hidden = false; $('#skinsX').focus();
+    if (fromShear) popBanner('Dostal jsi bednu!');
+  }
+  function closeSkins() { $('#skins').hidden = true; G.paused = false; last = performance.now(); try { $('#skBtn').focus(); } catch (e) { /* nic */ } }
+  $('#skBtn').addEventListener('click', function () { openSkins(false); });
+  $('#skinsX').addEventListener('click', closeSkins);
+  $('#skins').addEventListener('click', function (e) { if (e.target === this) closeSkins(); });
+  $('#skg').addEventListener('click', function (e) {
+    var b = e.target.closest('.sk'); if (!b || b.classList.contains('lock')) return;
+    S.skin = +b.dataset.k; save(); renderSkins(null);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#skins').hidden) closeSkins(); });
+
+  /* ---------- Výběr mapy ---------- */
+  function buildMaps() {
+    var cur = mapOf(S.w), html = '';
+    MAPS.forEach(function (M, i) {
+      var m = i + 1, lock = m > S.unlocked, done = m < S.unlocked || (m === MAP_N && S.won), st = m === cur ? stOf(S.w) : (S.mp[i] || 1);
+      var pct = done ? 100 : lock ? 0 : Math.round((st - 1) / PER * 100);
+      var sub = lock ? 'Zamčeno · dokonči mapu ' + (m - 1) : (done ? 'Dokončeno ✓' : 'Zeď ' + st + '/' + PER);
+      var c0 = M.sky[0], c2 = M.sky[2];
+      html += '<button type="button" class="mc' + (lock ? ' lock' : '') + '" data-m="' + m + '"' + (m === cur ? ' aria-current="true"' : '') + (lock ? ' aria-disabled="true"' : '') + '>' +
+        '<span class="msky" style="background:linear-gradient(rgb(' + c0 + '),rgb(' + c2 + '))"></span>' +
+        '<span class="mn"><span class="mnum">' + m + '</span>' + M.e + ' ' + M.n + '</span><span class="mp">' + sub + '</span>' +
+        '<span class="mbar"><i style="width:' + pct + '%"></i></span></button>';
+    });
+    $('#mgrid').innerHTML = html;
+  }
+  function openMaps() { audio(); buildMaps(); G.paused = true; $('#maps').hidden = false; $('#mapsX').focus(); }
+  function closeMaps() { $('#maps').hidden = true; G.paused = false; last = performance.now(); try { $('#mapBtn').focus(); } catch (e) { /* nic */ } }
+  function pickMap(m) {
+    if (m > S.unlocked) return false;
+    var cur = mapOf(S.w);
+    S.mp[cur - 1] = stOf(S.w);
+    if (m !== cur) {
+      S.w = (m - 1) * PER + Math.max(1, Math.min(PER, S.mp[m - 1] || 1));
+      debris.length = 0; sparks.length = 0; dusts.length = 0; rings.length = 0; texts.length = 0; fires.length = 0; flashW = 0; tsT = 0;
+      G.hurt = 0; bonus = null; G.combo = 0; G.swing = null; G.buf = null; G.cd = 0; showCombo();
+      nextWall(); updTop(); updShop(); save();
+    }
+    return true;
+  }
+  /* ---------- Žebříček a jméno hráče (sdílená databáze stránky) ---------- */
+  var DB = null, UID = null, lastSync = 0, lastSig = '';
+  function initBoard() {
+    return new Promise(function (res) {
+      var done = false, to = setTimeout(function () { if (!done) { done = true; res(); } }, 4000);
+      (async function () {
+        try {
+          if (!window.claude || !window.claude.use) return;
+          var u = await window.claude.use('user'), d = await window.claude.use('db');
+          if (!u || !d) return;
+          var id = await u.id();
+          if (!id) return;
+          UID = id; DB = d;
+        } catch (e) { DB = null; }
+      })().then(function () { if (!done) { done = true; clearTimeout(to); res(); } });
+    });
+  }
+  function boardData() { return { name: S.name, map: mapOf(S.best), best: S.best, lvl: Math.max(S.maxL, S.L), shears: S.shears, master: !!S.master, t: Date.now() }; }
+  function syncBoard(force) {
+    if (!DB || !UID || !S.name) return;
+    S.maxL = Math.max(S.maxL, S.L);
+    var d = boardData(), sig = [d.best, d.lvl, d.shears, d.master].join();
+    if (!force && (sig === lastSig || Date.now() - lastSync < 20000)) return;
+    lastSig = sig; lastSync = Date.now();
+    try { DB.doc('players/' + UID).set(d).catch(function () { lastSig = ''; }); } catch (e) { lastSig = ''; }
+  }
+  var NAME_RE = /^[\p{L}\p{N} _.\-]{3,14}$/u;
+  function showNameDlg() {
+    G.paused = true; $('#nameDlg').hidden = false; setTimeout(function () { try { $('#nameIn').focus(); } catch (e) { /* nic */ } }, 50);
+  }
+  function afterBoardInit() {
+    if (S.name) { syncBoard(true); return; }
+    var fin = function (ex) {
+      if (ex && ex.exists && ex.data() && typeof ex.data().name === 'string') { S.name = ex.data().name.slice(0, 14); save(); syncBoard(true); return; }
+      showNameDlg();
+    };
+    if (DB && UID) { try { DB.doc('players/' + UID).get().then(fin, function () { showNameDlg(); }); } catch (e) { showNameDlg(); } }
+    else showNameDlg();
+  }
+  $('#nameForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = $('#nameIn').value.replace(/\s+/g, ' ').trim(), err = $('#nameErr');
+    if (!NAME_RE.test(v)) { err.textContent = 'Jméno musí mít 3 až 14 povolených znaků.'; return; }
+    var ok = function () {
+      S.name = v; save(); $('#nameDlg').hidden = true; G.paused = false; last = performance.now(); syncBoard(true);
+      popBanner('Vítej, ' + v + '!');
+    };
+    if (!DB) { ok(); return; }
+    $('#nameGo').disabled = true; err.textContent = 'Kontroluju jméno…';
+    DB.collection('players').get().then(function (snap) {
+      var low = v.toLowerCase(), taken = snap.docs.some(function (d) { var n = d.data() && d.data().name; return d.id !== UID && typeof n === 'string' && n.toLowerCase() === low; });
+      $('#nameGo').disabled = false;
+      if (taken) { err.textContent = 'Tohle jméno už někdo používá.'; return; }
+      err.textContent = ''; ok();
+    }, function () { $('#nameGo').disabled = false; err.textContent = ''; ok(); });
+  });
+  // Soupeři řízení hrou (označení 🤖), stejní pro všechny hráče, aby měl žebříček s čím soutěžit i offline.
+  var BOTS = [['Jakub', 700, 210, 9], ['Tereza', 560, 170, 7], ['Matyáš', 430, 140, 5], ['Lucie', 330, 112, 4], ['Ondra', 260, 90, 3], ['Adéla', 190, 66, 2],
+    ['Filip', 140, 50, 2], ['Kristýna', 100, 38, 1], ['David', 70, 27, 1], ['Natálie', 45, 18, 0], ['Honza', 28, 11, 0], ['Veronika', 14, 6, 0]];
+  function boardRows(real) {
+    var rows = real.slice();
+    BOTS.forEach(function (b, i) { rows.push({ id: 'bot' + i, bot: true, name: b[0], map: mapOf(b[1]), best: b[1], lvl: b[2], sh: b[3] }); });
+    return rows;
+  }
+  function renderBoard(rows) {
+    var box = $('#lb'); box.textContent = '';
+    var mine = rows.filter(function (r) { return r.id === 'me'; })[0];
+    if (mine) { mine.master = S.master || mine.master; mine.best = Math.max(mine.best, S.best); mine.lvl = Math.max(mine.lvl, S.maxL, S.L); mine.sh = Math.max(mine.sh, S.shears); mine.map = mapOf(mine.best); }
+    else rows.push({ id: 'me', name: S.name || 'Ty', map: mapOf(S.best), best: S.best, lvl: Math.max(S.maxL, S.L), sh: S.shears, master: S.master });
+    rows.sort(function (a, b) { return b.best - a.best || b.lvl - a.lvl || b.sh - a.sh || (a.name < b.name ? -1 : 1); });
+    var hd = document.createElement('div'); hd.className = 'lbr hd';
+    ['#', 'Hráč', 'Mapa', 'Lvl', 'Vlna'].forEach(function (t) { var sp = document.createElement('span'); sp.textContent = t; hd.appendChild(sp); });
+    box.appendChild(hd);
+    var myRank = 0, humans = 0;
+    rows.forEach(function (r, i) { if (r.id === 'me') myRank = i + 1; if (!r.bot) humans++; });
+    rows.forEach(function (r, i) {
+      if (i >= 50 && r.id !== 'me') return;
+      var row = document.createElement('div'); row.className = 'lbr' + (r.id === 'me' ? ' me' : '');
+      var cells = [(i + 1) + '.', r.name + (r.id === 'me' ? ' (ty)' : ''), MAPS[Math.min(MAP_N, r.map) - 1].e + ' ' + r.map + '/' + MAP_N, String(r.lvl), r.sh + '×'];
+      cells.forEach(function (t, k) { var sp = document.createElement('span'); if (k === 1) sp.className = 'nm'; sp.textContent = t; if (k === 1 && r.master) { var mt = document.createElement('small'); mt.className = 'mt'; mt.textContent = ' MASTER'; sp.appendChild(mt); }
+        if (k === 1 && r.bot) { var tg = document.createElement('small'); tg.className = 'bt'; tg.textContent = ' bot'; sp.appendChild(tg); } row.appendChild(sp); });
+      box.appendChild(row);
+    });
+    var note = document.createElement('div'); note.className = 'lbmsg'; note.textContent = 'Hráči označení „bot“ jsou soupeři řízení hrou, ne skuteční lidé; mají u každého stejné výsledky. Vlna = kolikrát hráč ostříhal vlnu.' + (DB ? '' : ' Skuteční hráči se ukážou, jen když hru otevřeš přes odkaz na Claude.');
+    box.appendChild(note);
+    $('#boardSub').textContent = 'Tvoje místo: ' + myRank + '. · Skutečných hráčů: ' + humans;
+  }
+  function openBoard() {
+    audio(); G.paused = true; $('#board').hidden = false; $('#boardX').focus();
+    if (!DB) { renderBoard(boardRows([])); return; }
+    syncBoard(true);
+    var box = $('#lb'); box.textContent = ''; var p = document.createElement('div'); p.className = 'lbmsg'; p.textContent = 'Načítám…'; box.appendChild(p);
+    DB.collection('players').get().then(function (snap) {
+      renderBoard(boardRows(snap.docs.map(function (d) { var x = d.data() || {}; return { id: d.id === UID ? 'me' : d.id, name: String(x.name || '?').slice(0, 14), map: +x.map || 1, best: +x.best || 1, lvl: +x.lvl || 1, sh: +x.shears || 0, master: !!x.master }; })));
+    }, function () { renderBoard(boardRows([])); });
+  }
+  function closeBoard() { $('#board').hidden = true; G.paused = false; last = performance.now(); try { $('#lbBtn').focus(); } catch (e) { /* nic */ } }
+  $('#lbBtn').addEventListener('click', openBoard);
+  $('#boardX').addEventListener('click', closeBoard);
+  $('#board').addEventListener('click', function (e) { if (e.target === this) closeBoard(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#board').hidden) closeBoard(); });
+  $('#mapBtn').addEventListener('click', openMaps);
+  $('#mapsX').addEventListener('click', closeMaps);
+  $('#maps').addEventListener('click', function (e) { if (e.target === this) closeMaps(); });
+  $('#mgrid').addEventListener('click', function (e) {
+    var b = e.target.closest('.mc'); if (!b) return;
+    if (!pickMap(+b.dataset.m)) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); return; }
+    closeMaps();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#maps').hidden) closeMaps(); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { save(); syncBoard(true); } });
+  window.addEventListener('pagehide', save);
+  window.addEventListener('resize', resize);
+
+  /* =========================================================
+     Start
+     ========================================================= */
+  var last = 0;
+  function frame(now) {
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (tsT > 0) { tsT -= dt; dt *= 0.3; }
+    if (!G.paused) update(dt);
+    draw();
+    requestAnimationFrame(frame);
+  }
+  function start(data) {
+    S = (data && data.save) ? applySave(data.save) : loadLocal();
+    buildShop();
+    PACKS.forEach(function (p) { var o = document.createElement('option'); o.value = p[0]; o.textContent = p[1]; $('#sndSel').appendChild(o); });
+    G.world = mapOf(S.w) - 1;
+    applyWorld();
+    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(stage);
+    resize();
+    nextWall(); updTop(); updShop(); updAbil(true);
+    if (S.weakHits >= 3) $('#hint').hidden = true;
+    last = performance.now();
+    requestAnimationFrame(frame);
+    setInterval(function () { save(); syncBoard(false); }, 5000);
+    initBoard().then(afterBoardInit);
+  }
+  var hot = window.claude && window.claude.hot;
+  try { if (hot && hot.snapshot) hot.snapshot(function () { return { save: serialize() }; }); } catch (e) { /* bez přenosu stavu */ }
+  if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
+})();
+</script>
+
+</body></html>
